@@ -37,7 +37,8 @@
         "lint": "ng lint",
         "test:unit": "ng test primeng --watch=false",
         "test:unit:watch": "ng test primeng",
-        "test:unit:coverage": "ng test primeng --coverage"
+        "test:unit:coverage": "ng test primeng --coverage",
+        "dist:pack": "pnpm run build && pnpm pack --pack-destination ./pack && tar -xzf dist/pack/primeng-*.tgz --strip-components=1 -C dist/pack && rm -f dist/pack/primeng-*.tgz"
     },
     "devDependencies": {
         "karma": "~6.4.2",
