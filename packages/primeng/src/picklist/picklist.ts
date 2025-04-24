@@ -139,29 +139,40 @@ import { PickListStyle } from './style/pickliststyle';
                     [filter]="filterBy"
                     [filterBy]="filterBy"
                     [filterLocale]="filterLocale"
+                    [filterMatchMode]="filterMatchMode"
                     [filterPlaceHolder]="sourceFilterPlaceholder"
                     [dragdrop]="dragdrop"
                     (onDrop)="onDrop($event, SOURCE_LIST)"
+                    (onFilter)="onSourceFilter.emit($event)"
                 >
-                    <ng-container *ngIf="sourceHeaderTemplate || _sourceHeaderTemplate">
+                    <ng-container *ngIf="sourceHeaderTemplate || _sourceHeaderTemplate || sourceHeader">
                         <ng-template #header>
+                            <div class="p-picklist-title" *ngIf="!sourceHeaderTemplate && !_sourceHeaderTemplate">{{ sourceHeader }}</div>
                             <ng-template *ngTemplateOutlet="sourceHeaderTemplate || _sourceHeaderTemplate"></ng-template>
                         </ng-template>
                     </ng-container>
                     <ng-container *ngIf="sourceFilterTemplate || _sourceFilterTemplate">
-                        <ng-container *ngTemplateOutlet="sourceFilterTemplate || _sourceFilterTemplate; context: { options: sourceFilterOptions }"></ng-container>
+                        <ng-template #filter>
+                            <ng-template *ngTemplateOutlet="sourceFilterTemplate || _sourceFilterTemplate; context: { options: sourceFilterOptions }"></ng-template>
+                        </ng-template>
                     </ng-container>
                     <ng-container *ngIf="sourceFilterIconTemplate || _sourceFilterIconTemplate">
                         <ng-container *ngTemplateOutlet="sourceFilterIconTemplate || _sourceFilterIconTemplate"></ng-container>
                     </ng-container>
-                    <div class="p-picklist-title" *ngIf="!sourceHeaderTemplate && !_sourceHeaderTemplate">{{ sourceHeader }}</div>
                     <ng-container *ngIf="itemTemplate || _itemTemplate">
-                        <ng-template #item let-item let-index="index" let-selected="selected">
-                            <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: item, index: index, selected: selected }"></ng-container>
+                        <ng-template #item let-item let-index="index" let-selected="selected" let-disabled="disabled">
+                            <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: item, index: index, selected: selected, disabled: disabled }"></ng-container>
                         </ng-template>
                     </ng-container>
-                    <ng-container *ngIf="emptyFilterMessageSourceTemplate || _emptyFilterMessageSourceTemplate || emptyMessageSourceTemplate || _emptyMessageSourceTemplate">
-                        <ng-container *ngTemplateOutlet="emptyFilterMessageSourceTemplate || _emptyFilterMessageSourceTemplate || emptyMessageSourceTemplate || _emptyMessageSourceTemplate"></ng-container>
+                    <ng-container *ngIf="emptyMessageSourceTemplate || _emptyMessageSourceTemplate">
+                        <ng-template #empty>
+                            <ng-container *ngTemplateOutlet="emptyMessageSourceTemplate || _emptyMessageSourceTemplate"></ng-container>
+                        </ng-template>
+                    </ng-container>
+                    <ng-container *ngIf="emptyFilterMessageSourceTemplate || _emptyFilterMessageSourceTemplate">
+                        <ng-template #emptyfilter>
+                            <ng-container *ngTemplateOutlet="emptyFilterMessageSourceTemplate || _emptyFilterMessageSourceTemplate"></ng-container>
+                        </ng-template>
                     </ng-container>
                 </p-listbox>
             </div>
@@ -262,29 +273,40 @@ import { PickListStyle } from './style/pickliststyle';
                     [filter]="filterBy"
                     [filterBy]="filterBy"
                     [filterLocale]="filterLocale"
+                    [filterMatchMode]="filterMatchMode"
                     [filterPlaceHolder]="targetFilterPlaceholder"
                     [dragdrop]="dragdrop"
                     (onDrop)="onDrop($event, TARGET_LIST)"
+                    (onFilter)="onTargetFilter.emit($event)"
                 >
-                    <ng-container *ngIf="targetHeaderTemplate || _targetHeaderTemplate">
+                    <ng-container *ngIf="targetHeaderTemplate || _targetHeaderTemplate || targetHeader">
                         <ng-template #header>
+                            <div class="p-picklist-title" *ngIf="!targetHeaderTemplate && !_targetHeaderTemplate">{{ targetHeader }}</div>
                             <ng-template *ngTemplateOutlet="targetHeaderTemplate || _targetHeaderTemplate"></ng-template>
                         </ng-template>
                     </ng-container>
                     <ng-container *ngIf="targetFilterTemplate || _targetFilterTemplate">
-                        <ng-container *ngTemplateOutlet="targetFilterTemplate || _targetFilterTemplate; context: { options: targetFilterOptions }"></ng-container>
+                        <ng-template #filter>
+                            <ng-template *ngTemplateOutlet="targetFilterTemplate || _targetFilterTemplate; context: { options: targetFilterOptions }"></ng-template>
+                        </ng-template>
                     </ng-container>
                     <ng-container *ngIf="targetFilterIconTemplate || _targetFilterIconTemplate">
                         <ng-container *ngTemplateOutlet="targetFilterIconTemplate || _targetFilterIconTemplate"></ng-container>
                     </ng-container>
-                    <div class="p-picklist-title" *ngIf="!targetHeaderTemplate && !_targetHeaderTemplate">{{ targetHeader }}</div>
                     <ng-container *ngIf="itemTemplate || _itemTemplate">
-                        <ng-template #item let-item let-index="index" let-selected="selected">
-                            <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: item, index: index, selected: selected }"></ng-container>
+                        <ng-template #item let-item let-index="index" let-selected="selected" let-disabled="disabled">
+                            <ng-container *ngTemplateOutlet="itemTemplate || _itemTemplate; context: { $implicit: item, index: index, selected: selected, disabled: disabled }"></ng-container>
                         </ng-template>
                     </ng-container>
-                    <ng-container *ngIf="emptyFilterMessageTargetTemplate || _emptyFilterMessageTargetTemplate || emptyMessageTargetTemplate || _emptyMessageTargetTemplate">
-                        <ng-container *ngTemplateOutlet="emptyFilterMessageTargetTemplate || _emptyFilterMessageTargetTemplate || emptyMessageTargetTemplate || _emptyMessageTargetTemplate"></ng-container>
+                    <ng-container *ngIf="emptyMessageTargetTemplate || _emptyMessageTargetTemplate">
+                        <ng-template #empty>
+                            <ng-container *ngTemplateOutlet="emptyMessageTargetTemplate || _emptyMessageTargetTemplate"></ng-container>
+                        </ng-template>
+                    </ng-container>
+                    <ng-container *ngIf="emptyFilterMessageTargetTemplate || _emptyFilterMessageTargetTemplate">
+                        <ng-template #emptyfilter>
+                            <ng-container *ngTemplateOutlet="emptyFilterMessageTargetTemplate || _emptyFilterMessageTargetTemplate"></ng-container>
+                        </ng-template>
                     </ng-container>
                 </p-listbox>
             </div>
@@ -544,7 +566,7 @@ export class PickList extends BaseComponent implements AfterViewChecked, AfterCo
      * Defines how the items are filtered.
      * @group Props
      */
-    @Input() filterMatchMode: 'contains' | 'startsWith' | 'endsWith' | 'equals' | 'notEquals' | 'in' | 'lt' | 'lte' | 'gt' | 'gte' = 'contains';
+    @Input() filterMatchMode: 'contains' | 'startsWith' | 'endsWith' | 'equals' | 'notEquals' | 'in' | 'lt' | 'lte' | 'gt' | 'gte' | string = 'contains';
     /**
      * Whether to displays rows with alternating colors.
      * @group Props

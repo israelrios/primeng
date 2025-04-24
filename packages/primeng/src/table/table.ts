@@ -1964,7 +1964,7 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
         }
     }
 
-    selectRange(event: MouseEvent | KeyboardEvent, rowIndex: number) {
+    selectRange(event: MouseEvent | KeyboardEvent, rowIndex: number, isMetaKeySelection?: boolean | undefined) {
         let rangeStart, rangeEnd;
 
         if (<number>this.anchorRowIndex > rowIndex) {
@@ -1986,7 +1986,7 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
         let rangeRowsData: RowData[] = [];
         for (let i = <number>rangeStart; i <= <number>rangeEnd; i++) {
             let rangeRowData = this.filteredValue ? this.filteredValue[i] : this.value[i];
-            if (!this.isSelected(rangeRowData)) {
+            if (!this.isSelected(rangeRowData) && !isMetaKeySelection) {
                 if (!this.isRowSelectable(rangeRowData, rowIndex)) {
                     continue;
                 }
@@ -3571,22 +3571,23 @@ export class FrozenColumn implements AfterViewInit {
         if (this._frozen) {
             if (this.alignFrozen === 'right') {
                 let right = 0;
-                let next = this.el.nativeElement.nextElementSibling;
-                if (next) {
-                    right = DomHandler.getOuterWidth(next) + (parseFloat(next.style.right) || 0);
+                let sibling = this.el.nativeElement.nextElementSibling;
+                while (sibling) {
+                    right += DomHandler.getOuterWidth(sibling);
+                    sibling = sibling.nextElementSibling;
                 }
                 this.el.nativeElement.style.right = right + 'px';
             } else {
                 let left = 0;
-                let prev = this.el.nativeElement.previousElementSibling;
-                if (prev) {
-                    left = DomHandler.getOuterWidth(prev) + (parseFloat(prev.style.left) || 0);
+                let sibling = this.el.nativeElement.previousElementSibling;
+                while (sibling) {
+                    left += DomHandler.getOuterWidth(sibling);
+                    sibling = sibling.previousElementSibling;
                 }
                 this.el.nativeElement.style.left = left + 'px';
             }
 
             const filterRow = this.el.nativeElement?.parentElement?.nextElementSibling;
-
             if (filterRow) {
                 let index = DomHandler.index(this.el.nativeElement);
                 if (filterRow.children && filterRow.children[index]) {
@@ -3869,7 +3870,7 @@ export class SelectableRow implements OnInit, OnDestroy {
                 if (event.code === 'KeyA' && (event.metaKey || event.ctrlKey) && this.dt.selectionMode === 'multiple') {
                     const data = this.dt.dataToRender(this.dt.processedData);
                     this.dt.selection = [...data];
-                    this.dt.selectRange(event, data.length - 1);
+                    this.dt.selectRange(event, data.length - 1, true);
 
                     event.preventDefault();
                 }
@@ -4001,7 +4002,7 @@ export class SelectableRow implements OnInit, OnDestroy {
     findNextSelectableRow(row: HTMLTableRowElement): HTMLTableRowElement | null {
         let nextRow = <HTMLTableRowElement>row.nextElementSibling;
         if (nextRow) {
-            if (DomHandler.hasClass(nextRow, 'p-selectable-row')) return nextRow;
+            if (DomHandler.hasClass(nextRow, 'p-datatable-selectable-row')) return nextRow;
             else return this.findNextSelectableRow(nextRow);
         } else {
             return null;
@@ -4011,7 +4012,7 @@ export class SelectableRow implements OnInit, OnDestroy {
     findPrevSelectableRow(row: HTMLTableRowElement): HTMLTableRowElement | null {
         let prevRow = <HTMLTableRowElement>row.previousElementSibling;
         if (prevRow) {
-            if (DomHandler.hasClass(prevRow, 'p-selectable-row')) return prevRow;
+            if (DomHandler.hasClass(prevRow, 'p-datatable-selectable-row')) return prevRow;
             else return this.findPrevSelectableRow(prevRow);
         } else {
             return null;
@@ -5300,7 +5301,7 @@ export class ReorderableRow implements AfterViewInit {
                 <ng-template #icon>
                     <FilterIcon *ngIf="!filterIconTemplate && !_filterIconTemplate" />
                     <span class="pi-filter-icon" *ngIf="filterIconTemplate || _filterIconTemplate">
-                        <ng-template *ngTemplateOutlet="filterIconTemplate || _filterIconTemplate"></ng-template>
+                        <ng-template *ngTemplateOutlet="filterIconTemplate || _filterIconTemplate; context: { hasFilter: hasFilter }"></ng-template>
                     </span>
                 </ng-template>
             </p-button>
