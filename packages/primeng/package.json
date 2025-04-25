@@ -1,6 +1,6 @@
 {
     "name": "primeng",
-    "version": "19.1.0",
+    "version": "19.1.0-dsgov",
     "author": "PrimeTek Informatics",
     "description": "PrimeNG is an open source UI library for Angular featuring a rich set of 80+ components, a theme designer, various theme alternatives such as Material, Bootstrap, Tailwind, premium templates and professional support. In addition, it integrates with PrimeBlock, which has 370+ ready to use UI blocks to build spectacular applications in no time.",
     "homepage": "https://primeng.org/",
@@ -26,13 +26,15 @@
     "publishConfig": {
         "directory": "dist",
         "linkDirectory": false,
-        "access": "public"
+        "access": "public",
+        "registry": "http://nexus.aic.serpro.gov.br/repository/npm-private/"
     },
     "scripts": {
-        "build": "cross-env NODE_ENV=production INPUT_DIR=src/ OUTPUT_DIR=dist/ pnpm run build:package",
+        "build": "NODE_ENV=production INPUT_DIR=src/ OUTPUT_DIR=dist/ pnpm run build:package",
         "build:package": "pnpm run build:prebuild && ng build primeng && pnpm run build:postbuild",
         "build:prebuild": "node ./scripts/prebuild.mjs",
         "build:postbuild": "node ./scripts/postbuild.mjs",
+        "release:dsgov": "pnpm run build && pnpm publish --tag dsgov --no-git-checks",
         "dev:link": "pnpm link --global && npm link",
         "lint": "ng lint",
         "test:unit": "ng test primeng --watch=false",
@@ -50,7 +52,7 @@
     },
     "peerDependencies": {
         "@angular/animations": "^19.0.0",
-        "@angular/cdk": "19.2.3",
+        "@angular/cdk": "^19.0.0",
         "@angular/common": "^19.0.0",
         "@angular/core": "^19.0.0",
         "@angular/forms": "^19.0.0",
