@@ -4,7 +4,10 @@
         "node_modules"
     ],
     "compilerOptions": {
-        "moduleResolution": "bundler"
+        "moduleResolution": "bundler",
+        "paths": {
+            "primeng/*": ["./packages/primeng/src/*/public_api"]
+        }
     },
     "angularCompilerOptions": {
         "disableTypeScriptVersionCheck": true,
