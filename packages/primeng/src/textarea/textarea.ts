@@ -9,7 +9,7 @@ import { TextareaStyle } from './style/textareastyle';
  * @group Components
  */
 @Directive({
-    selector: '[pTextarea]',
+    selector: '[pTextarea], [pInputTextarea]',
     standalone: true,
     host: {
         class: 'p-textarea p-component',
@@ -92,10 +92,14 @@ export class Textarea extends BaseComponent implements OnInit, AfterViewInit, On
 
     ngAfterViewInit() {
         super.ngAfterViewInit();
-        this.cd.detectChanges();
         if (this.autoResize) this.resize();
 
         this.updateFilledState();
+        this.cd.detectChanges();
+    }
+
+    ngAfterViewChecked() {
+        if (this.autoResize) this.resize();
     }
 
     @HostListener('input', ['$event'])

@@ -17,6 +17,7 @@ import {
     inject,
     Inject,
     Injectable,
+    input,
     Input,
     NgModule,
     NgZone,
@@ -38,7 +39,7 @@ import { FormsModule } from '@angular/forms';
 import { BlockableUI, FilterMatchMode, FilterMetadata, FilterOperator, FilterService, LazyLoadMeta, OverlayService, PrimeTemplate, ScrollerOptions, SelectItem, SharedModule, SortMeta, TableState, TranslationKeys } from 'primeng/api';
 import { BaseComponent } from 'primeng/basecomponent';
 import { Button, ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
+import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ConnectedOverlayScrollHandler, DomHandler } from 'primeng/dom';
 import { ArrowDownIcon } from 'primeng/icons/arrowdown';
@@ -236,9 +237,9 @@ export class TableService {
                 </ng-container>
 
                 <ng-template #buildInTable let-items let-scrollerOptions="options">
-                    <table #table role="table" [ngClass]="cx('table')" [class]="tableStyleClass" [style]="tableStyle" [attr.id]="id + '-table'">
+                    <table #table [ngClass]="cx('table')" [class]="tableStyleClass" [style]="tableStyle" [attr.id]="id + '-table'">
                         <ng-container *ngTemplateOutlet="colGroupTemplate || _colGroupTemplate; context: { $implicit: scrollerOptions.columns }"></ng-container>
-                        <thead role="rowgroup" #thead [ngClass]="cx('thead')" [ngStyle]="sx('thead')">
+                        <thead #thead [ngClass]="cx('thead')" [ngStyle]="sx('thead')">
                             <ng-container
                                 *ngTemplateOutlet="
                                     headerGroupedTemplate || headerTemplate || _headerTemplate;
@@ -249,7 +250,6 @@ export class TableService {
                             ></ng-container>
                         </thead>
                         <tbody
-                            role="rowgroup"
                             [ngClass]="cx('tbody')"
                             *ngIf="frozenValue || frozenBodyTemplate || _frozenBodyTemplate"
                             [value]="frozenValue"
@@ -259,7 +259,6 @@ export class TableService {
                             [frozen]="true"
                         ></tbody>
                         <tbody
-                            role="rowgroup"
                             [ngClass]="cx('tbody', scrollerOptions.contentStyleClass)"
                             [style]="scrollerOptions.contentStyle"
                             [value]="dataToRender(scrollerOptions.rows)"
@@ -268,12 +267,11 @@ export class TableService {
                             [scrollerOptions]="scrollerOptions"
                         ></tbody>
                         <tbody
-                            role="rowgroup"
                             *ngIf="scrollerOptions.spacerStyle"
                             [style]="'height: calc(' + scrollerOptions.spacerStyle.height + ' - ' + scrollerOptions.rows.length * scrollerOptions.itemSize + 'px);'"
                             [ngClass]="cx('virtualScrollerSpacer')"
                         ></tbody>
-                        <tfoot role="rowgroup" *ngIf="footerGroupedTemplate || footerTemplate || _footerTemplate || _footerGroupedTemplate" #tfoot [ngClass]="cx('footer')" [ngStyle]="sx('tfoot')">
+                        <tfoot *ngIf="footerGroupedTemplate || footerTemplate || _footerTemplate || _footerGroupedTemplate" #tfoot [ngClass]="cx('footer')" [ngStyle]="sx('tfoot')">
                             <ng-container
                                 *ngTemplateOutlet="
                                     footerGroupedTemplate || footerTemplate || _footerTemplate || _footerGroupedTemplate;
@@ -2113,7 +2111,7 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
         }
     }
 
-    toggleRowWithCheckbox(event: any, rowData: any) {
+    toggleRowWithCheckbox(event: { originalEvent: Event; rowIndex: number }, rowData: any) {
         this.selection = this.selection || [];
         let selected = this.isSelected(rowData);
         let dataKeyValue = this.dataKey ? String(ObjectUtils.resolveFieldData(rowData, this.dataKey)) : null;
@@ -2157,9 +2155,9 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
         }
     }
 
-    toggleRowsWithCheckbox(event: Event, check: boolean) {
+    toggleRowsWithCheckbox({ originalEvent }: CheckboxChangeEvent, check: boolean) {
         if (this._selectAll !== null) {
-            this.selectAllChange.emit({ originalEvent: event, checked: check });
+            this.selectAllChange.emit({ originalEvent, checked: check });
         } else {
             const data = this.selectionPageOnly ? this.dataToRender(this.processedData) : this.processedData;
             let selection = this.selectionPageOnly && this._selection ? this._selection.filter((s: any) => !data.some((d: any) => this.equals(s, d))) : [];
@@ -2175,7 +2173,7 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
             this.selectionChange.emit(this._selection);
             this.tableService.onSelectionChange();
             this.onHeaderCheckboxToggle.emit({
-                originalEvent: event,
+                originalEvent,
                 checked: check
             });
 
@@ -3036,7 +3034,14 @@ export class Table<RowData = any> extends BaseComponent implements OnInit, After
 
     saveColumnWidths(state: any) {
         let widths: any[] = [];
-        let headers = DomHandler.find(this.containerViewChild?.nativeElement, '.p-datatable-thead > tr > th');
+        let headers = [];
+
+        const container = this.containerViewChild?.nativeElement;
+
+        if (container) {
+            headers = DomHandler.find(container, '.p-datatable-thead > tr > th');
+        }
+
         headers.forEach((header) => widths.push(DomHandler.getOuterWidth(header)));
         state.columnWidths = widths.join(',');
 
@@ -3605,14 +3610,18 @@ export class FrozenColumn implements AfterViewInit {
         '[class.p-datatable-sortable-column]': 'isEnabled()',
         '[class.p-datatable-column-sorted]': 'sorted',
         '[attr.tabindex]': 'isEnabled() ? "0" : null',
-        '[attr.role]': '"columnheader"',
+        '[attr.role]': 'role',
         '[attr.aria-sort]': 'sortOrder'
     }
 })
 export class SortableColumn implements OnInit, OnDestroy {
+    readonly #elementRef = inject(ElementRef);
+
     @Input('pSortableColumn') field: string | undefined;
 
     @Input({ transform: booleanAttribute }) pSortableColumnDisabled: boolean | undefined;
+
+    role = this.#elementRef.nativeElement?.tagName !== 'TH' ? 'columnheader' : null;
 
     sorted: boolean | undefined;
 
@@ -4876,28 +4885,23 @@ export class CellEditor implements AfterContentInit {
 @Component({
     selector: 'p-tableRadioButton',
     standalone: false,
-    template: ` <p-radioButton #rb [(ngModel)]="checked" [disabled]="disabled" [inputId]="inputId" [name]="name" [ariaLabel]="ariaLabel" [binary]="true" [value]="value" (onClick)="onClick($event)" /> `,
+    template: ` <p-radioButton #rb [(ngModel)]="checked" [disabled]="disabled()" [inputId]="inputId()" [name]="name()" [ariaLabel]="ariaLabel" [binary]="true" [value]="value" (onClick)="onClick($event)" /> `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class TableRadioButton {
-    @Input({ transform: booleanAttribute }) disabled: boolean | undefined;
-
+export class TableRadioButton implements OnInit, OnDestroy {
     @Input() value: any;
 
-    @Input({ transform: numberAttribute }) index: number | undefined;
-
-    @Input() inputId: string | undefined;
-
-    @Input() name: string | undefined;
+    readonly disabled = input<boolean | undefined, unknown>(undefined, { transform: booleanAttribute });
+    readonly index = input<number | undefined, unknown>(undefined, { transform: numberAttribute });
+    readonly inputId = input<string | undefined>();
+    readonly name = input<string | undefined>();
 
     @Input() ariaLabel: string | undefined;
 
     @ViewChild('rb') inputViewChild: Nullable<RadioButton>;
 
     checked: boolean | undefined;
-
-    focused: boolean | undefined;
 
     subscription: Subscription;
 
@@ -4918,11 +4922,11 @@ export class TableRadioButton {
     }
 
     onClick(event: RadioButtonClickEvent) {
-        if (!this.disabled) {
+        if (!this.disabled()) {
             this.dt.toggleRowWithRadio(
                 {
                     originalEvent: event.originalEvent,
-                    rowIndex: this.index
+                    rowIndex: this.index()
                 },
                 this.value
             );
@@ -4943,35 +4947,29 @@ export class TableRadioButton {
     selector: 'p-tableCheckbox',
     standalone: false,
     template: `
-        <p-checkbox [(ngModel)]="checked" [binary]="true" (onChange)="onClick($event)" [disabled]="disabled" [ariaLabel]="ariaLabel">
-            <ng-container *ngIf="dt.checkboxIconTemplate || dt._checkboxIconTemplate">
+        <p-checkbox [(ngModel)]="checked" [binary]="true" (onChange)="onClick($event)" [required]="required()" [disabled]="disabled()" [inputId]="inputId()" [name]="name()" [ariaLabel]="ariaLabel">
+            @if (dt.checkboxIconTemplate || dt._checkboxIconTemplate; as template) {
                 <ng-template pTemplate="icon">
-                    <ng-template *ngTemplateOutlet="dt.checkboxIconTemplate || dt._checkboxIconTemplate; context: { $implicit: checked }"></ng-template>
+                    <ng-template *ngTemplateOutlet="template; context: { $implicit: checked }" />
                 </ng-template>
-            </ng-container>
+            }
         </p-checkbox>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class TableCheckbox {
-    @Input({ transform: booleanAttribute }) disabled: boolean | undefined;
-
+export class TableCheckbox implements OnInit, OnDestroy {
     @Input() value: any;
 
-    @Input({ transform: numberAttribute }) index: number | undefined;
-
-    @Input() inputId: string | undefined;
-
-    @Input() name: string | undefined;
-
-    @Input({ transform: booleanAttribute }) required: boolean | undefined;
+    readonly disabled = input<boolean | undefined, unknown>(undefined, { transform: booleanAttribute });
+    readonly required = input<boolean | undefined, unknown>(undefined, { transform: booleanAttribute });
+    readonly index = input<number | undefined, unknown>(undefined, { transform: numberAttribute });
+    readonly inputId = input<string | undefined>();
+    readonly name = input<string | undefined>();
 
     @Input() ariaLabel: string | undefined;
 
     checked: boolean | undefined;
-
-    focused: boolean | undefined;
 
     subscription: Subscription;
 
@@ -4981,7 +4979,7 @@ export class TableCheckbox {
         public cd: ChangeDetectorRef
     ) {
         this.subscription = this.dt.tableService.selectionSource$.subscribe(() => {
-            this.checked = this.dt.isSelected(this.value) && !this.disabled;
+            this.checked = this.dt.isSelected(this.value) && !this.disabled();
             this.ariaLabel = this.ariaLabel || this.dt.config.translation.aria ? (this.checked ? this.dt.config.translation.aria.selectRow : this.dt.config.translation.aria.unselectRow) : undefined;
             this.cd.markForCheck();
         });
@@ -4991,25 +4989,17 @@ export class TableCheckbox {
         this.checked = this.dt.isSelected(this.value);
     }
 
-    onClick(event: Event) {
-        if (!this.disabled) {
+    onClick({ originalEvent }: CheckboxChangeEvent) {
+        if (!this.disabled()) {
             this.dt.toggleRowWithCheckbox(
                 {
-                    originalEvent: event,
-                    rowIndex: this.index
+                    originalEvent,
+                    rowIndex: this.index()
                 },
                 this.value
             );
         }
         DomHandler.clearSelection();
-    }
-
-    onFocus() {
-        this.focused = true;
-    }
-
-    onBlur() {
-        this.focused = false;
     }
 
     ngOnDestroy() {
@@ -5023,29 +5013,25 @@ export class TableCheckbox {
     selector: 'p-tableHeaderCheckbox',
     standalone: false,
     template: `
-        <p-checkbox [(ngModel)]="checked" (onChange)="onClick($event)" [binary]="true" [disabled]="isDisabled()" [ariaLabel]="ariaLabel">
-            <ng-container *ngIf="dt.headerCheckboxIconTemplate || dt._headerCheckboxIconTemplate">
+        <p-checkbox [(ngModel)]="checked" (onChange)="onClick($event)" [binary]="true" [disabled]="isDisabled()" [inputId]="inputId()" [name]="name()" [ariaLabel]="ariaLabel">
+            @if (dt.headerCheckboxIconTemplate || dt._headerCheckboxIconTemplate; as template) {
                 <ng-template pTemplate="icon">
-                    <ng-template *ngTemplateOutlet="dt.headerCheckboxIconTemplate || dt._headerCheckboxIconTemplate; context: { $implicit: checked }"></ng-template>
+                    <ng-template *ngTemplateOutlet="template; context: { $implicit: checked }" />
                 </ng-template>
-            </ng-container>
+            }
         </p-checkbox>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class TableHeaderCheckbox {
-    @Input({ transform: booleanAttribute }) disabled: boolean | undefined;
-
-    @Input() inputId: string | undefined;
-
-    @Input() name: string | undefined;
+export class TableHeaderCheckbox implements OnInit, OnDestroy {
+    readonly disabled = input<boolean | undefined, unknown>(undefined, { transform: booleanAttribute });
+    readonly inputId = input<string | undefined>();
+    readonly name = input<string | undefined>();
 
     @Input() ariaLabel: string | undefined;
 
     checked: boolean | undefined;
-
-    focused: boolean | undefined;
 
     selectionChangeSubscription: Subscription;
 
@@ -5070,8 +5056,8 @@ export class TableHeaderCheckbox {
         this.checked = this.updateCheckedState();
     }
 
-    onClick(event: Event) {
-        if (!this.disabled) {
+    onClick(event: CheckboxChangeEvent) {
+        if (!this.disabled()) {
             if (this.dt.value && this.dt.value.length > 0) {
                 this.dt.toggleRowsWithCheckbox(event, this.checked);
             }
@@ -5080,16 +5066,8 @@ export class TableHeaderCheckbox {
         DomHandler.clearSelection();
     }
 
-    onFocus() {
-        this.focused = true;
-    }
-
-    onBlur() {
-        this.focused = false;
-    }
-
     isDisabled() {
-        return this.disabled || !this.dt.value || !this.dt.value.length;
+        return this.disabled() || !this.dt.value || !this.dt.value.length;
     }
 
     ngOnDestroy() {
@@ -6202,7 +6180,7 @@ export class ColumnFilter extends BaseComponent implements AfterContentInit {
                     [currencyDisplay]="currencyDisplay"
                     [useGrouping]="useGrouping"
                 ></p-inputNumber>
-                <p-checkbox [indeterminate]="true" [binary]="true" *ngSwitchCase="'boolean'" [ngModel]="filterConstraint?.value" (ngModelChange)="onModelChange($event)" />
+                <p-checkbox [indeterminate]="filterConstraint?.value === null" [binary]="true" *ngSwitchCase="'boolean'" [ngModel]="filterConstraint?.value" (ngModelChange)="onModelChange($event)" />
 
                 <p-datepicker [ariaLabel]="ariaLabel" *ngSwitchCase="'date'" [placeholder]="placeholder" [ngModel]="filterConstraint?.value" (ngModelChange)="onModelChange($event)" appendTo="body"></p-datepicker>
             </ng-container>

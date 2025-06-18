@@ -39,7 +39,7 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
     standalone: true,
     imports: [ToggleButton, FormsModule, CommonModule, SharedModule],
     template: `
-        @for (option of options; track option; let i = $index) {
+        @for (option of options; track getOptionLabel(option); let i = $index) {
             <p-toggleButton
                 [autofocus]="autofocus"
                 [styleClass]="styleClass"
@@ -48,7 +48,7 @@ export const SELECTBUTTON_VALUE_ACCESSOR: any = {
                 [offLabel]="this.getOptionLabel(option)"
                 [disabled]="disabled || isOptionDisabled(option)"
                 (onChange)="onOptionSelect($event, option, i)"
-                [allowEmpty]="allowEmpty"
+                [allowEmpty]="getAllowEmpty()"
                 [size]="size"
             >
                 @if (itemTemplate || _itemTemplate) {
@@ -191,6 +191,13 @@ export class SelectButton extends BaseComponent implements AfterContentInit, Con
     focusedIndex: number = 0;
 
     _componentStyle = inject(SelectButtonStyle);
+
+    getAllowEmpty() {
+        if (this.multiple) {
+            return this.allowEmpty || this.value?.length !== 1;
+        }
+        return this.allowEmpty;
+    }
 
     getOptionLabel(option: any) {
         return this.optionLabel ? resolveFieldData(option, this.optionLabel) : option.label != undefined ? option.label : option;

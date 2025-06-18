@@ -188,7 +188,7 @@ export const INPUTNUMBER_VALUE_ACCESSOR: any = {
     host: {
         '[attr.data-pc-name]': "'inputnumber'",
         '[attr.data-pc-section]': "'root'",
-        style: 'style'
+        '[class]': 'hostClass'
     }
 })
 export class InputNumber extends BaseComponent implements OnInit, AfterContentInit, OnChanges, ControlValueAccessor {
@@ -556,23 +556,28 @@ export class InputNumber extends BaseComponent implements OnInit, AfterContentIn
         }
     }
 
-    @HostBinding('class') get hostClasses(): string {
-        if (typeof this._rootClass === 'string') {
-            return this._rootClass;
-        }
-        if (Array.isArray(this._rootClass)) {
-            return this._rootClass.join(' ');
-        }
-        if (typeof this._rootClass === 'object') {
-            return Object.keys(this._rootClass)
-                .filter((key) => this._rootClass[key])
-                .join(' ');
-        }
-        return '';
+    get hostClass(): string {
+        return [
+            'p-inputnumber p-component p-inputwrapper',
+            this.styleClass,
+            this.filled || this.allowEmpty === false ? 'p-inputwrapper-filled' : '',
+            this.focused ? 'p-inputwrapper-focus' : '',
+            this.showButtons && this.buttonLayout === 'stacked' ? 'p-inputnumber-stacked' : '',
+            this.showButtons && this.buttonLayout === 'horizontal' ? 'p-inputnumber-horizontal' : '',
+            this.showButtons && this.buttonLayout === 'vertical' ? 'p-inputnumber-vertical' : '',
+            this.hasFluid ? 'p-inputnumber-fluid' : ''
+        ]
+            .filter((cls) => !!cls)
+            .join(' ');
+    }
+
+    @HostBinding('style') get hostStyle(): any {
+        return this.style;
     }
 
     ngOnInit() {
         super.ngOnInit();
+
         this.ngControl = this.injector.get(NgControl, null, { optional: true });
 
         this.constructParser();
@@ -1453,7 +1458,7 @@ export class InputNumber extends BaseComponent implements OnInit, AfterContentIn
             this._decimal.lastIndex = 0;
 
             if (this.suffixChar) {
-                return decimalCharIndex !== -1 ? val1 : val1.replace(this.suffixChar, '').split(this._decimal)[0] + val2.replace(this.suffixChar, '').slice(decimalCharIndex) + this.suffixChar;
+                return decimalCharIndex !== -1 ? val1.replace(this.suffixChar, '').split(this._decimal)[0] + val2.replace(this.suffixChar, '').slice(decimalCharIndex) + this.suffixChar : val1;
             } else {
                 return decimalCharIndex !== -1 ? val1.split(this._decimal)[0] + val2.slice(decimalCharIndex) : val1;
             }
@@ -1490,6 +1495,7 @@ export class InputNumber extends BaseComponent implements OnInit, AfterContentIn
         this.input.nativeElement.value = this.formatValue(newValueString);
         this.input.nativeElement.setAttribute('aria-valuenow', newValueString);
         this.updateModel(event, newValueNumber);
+        this.onModelTouched();
         this.onBlur.emit(event);
     }
 
@@ -1510,14 +1516,10 @@ export class InputNumber extends BaseComponent implements OnInit, AfterContentIn
         } else if (isBlurUpdateOnMode) {
             this.onModelChange(value);
         }
-        this.onModelTouched();
     }
 
     writeValue(value: any): void {
         this.value = value ? Number(value) : value;
-        if (this.input) {
-            this.input.nativeElement.value = value ? Number(value) : value;
-        }
         this.cd.markForCheck();
     }
 

@@ -63,9 +63,9 @@ import { Ripple } from 'primeng/ripple';
 import { Scroller } from 'primeng/scroller';
 import { Tooltip } from 'primeng/tooltip';
 import { Nullable } from 'primeng/ts-helpers';
+import { ObjectUtils } from 'primeng/utils';
 import { MultiSelectBlurEvent, MultiSelectChangeEvent, MultiSelectFilterEvent, MultiSelectFilterOptions, MultiSelectFocusEvent, MultiSelectLazyLoadEvent, MultiSelectRemoveEvent, MultiSelectSelectAllChangeEvent } from './multiselect.interface';
 import { MultiSelectStyle } from './style/multiselectstyle';
-import { ObjectUtils } from 'primeng/utils';
 
 export const MULTISELECT_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -211,25 +211,29 @@ export class MultiSelectItem extends BaseComponent {
                 <ng-container *ngIf="!selectedItemsTemplate && !_selectedItemsTemplate">
                     <ng-container *ngIf="display === 'comma'">{{ label() || 'empty' }}</ng-container>
                     <ng-container *ngIf="display === 'chip'">
-                        <div #token *ngFor="let item of chipSelectedItems(); let i = index" class="p-multiselect-chip-item">
-                            <p-chip styleClass="p-multiselect-chip" [label]="getLabelByValue(item)" [removable]="!disabled && !readonly" (onRemove)="removeOption(item, $event)" [removeIcon]="chipIcon">
-                                <ng-container *ngIf="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate">
-                                    <ng-template #removeicon>
-                                        <ng-container *ngIf="!disabled && !readonly">
-                                            <span
-                                                class="p-multiselect-chip-icon"
-                                                *ngIf="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate"
-                                                (click)="removeOption(item, $event)"
-                                                [attr.data-pc-section]="'clearicon'"
-                                                [attr.aria-hidden]="true"
-                                            >
-                                                <ng-container *ngTemplateOutlet="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate; context: { class: 'p-multiselect-chip-icon' }"></ng-container>
-                                            </span>
-                                        </ng-container>
-                                    </ng-template>
-                                </ng-container>
-                            </p-chip>
-                        </div>
+                        @if (chipSelectedItems() && chipSelectedItems().length === maxSelectedLabels) {
+                            {{ getSelectedItemsLabel() }}
+                        } @else {
+                            <div #token *ngFor="let item of chipSelectedItems(); let i = index" class="p-multiselect-chip-item">
+                                <p-chip styleClass="p-multiselect-chip" [label]="getLabelByValue(item)" [removable]="!disabled && !readonly" (onRemove)="removeOption(item, $event)" [removeIcon]="chipIcon">
+                                    <ng-container *ngIf="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate">
+                                        <ng-template #removeicon>
+                                            <ng-container *ngIf="!disabled && !readonly">
+                                                <span
+                                                    class="p-multiselect-chip-icon"
+                                                    *ngIf="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate"
+                                                    (click)="removeOption(item, $event)"
+                                                    [attr.data-pc-section]="'clearicon'"
+                                                    [attr.aria-hidden]="true"
+                                                >
+                                                    <ng-container *ngTemplateOutlet="chipIconTemplate || _chipIconTemplate || removeTokenIconTemplate || _removeTokenIconTemplate; context: { class: 'p-multiselect-chip-icon' }"></ng-container>
+                                                </span>
+                                            </ng-container>
+                                        </ng-template>
+                                    </ng-container>
+                                </p-chip>
+                            </div>
+                        }
                         <ng-container *ngIf="!modelValue() || modelValue().length === 0">{{ placeholder() || defaultLabel || 'empty' }}</ng-container>
                     </ng-container>
                 </ng-container>
@@ -575,7 +579,7 @@ export class MultiSelect extends BaseComponent implements OnInit, AfterViewInit,
         return this._maxSelectedLabels;
     }
     /**
-     * Decides how many selected item labels to show at most.
+     * Maximum number of selectable items.
      * @group Props
      */
     @Input({ transform: numberAttribute }) selectionLimit: number | undefined;
@@ -2000,7 +2004,9 @@ export class MultiSelect extends BaseComponent implements OnInit, AfterViewInit,
                 ? this.visibleOptions().filter((option) => !this.isValidOption(option) && this.isSelected(option))
                 : this.visibleOptions().filter((option) => this.isSelected(option) || this.isValidOption(option));
 
-            const optionValues = [...selectedDisabledOptions, ...visibleOptions].map((option) => this.getOptionValue(option));
+            const selectedOptionsBeforeSearch = this.filter && !this.allSelected() ? this.getAllVisibleAndNonVisibleOptions().filter((option) => this.isSelected(option) && this.isValidOption(option)) : [];
+
+            const optionValues = [...selectedOptionsBeforeSearch, ...selectedDisabledOptions, ...visibleOptions].map((option) => this.getOptionValue(option));
             const value = [...new Set(optionValues)];
 
             this.updateModel(value, event);
