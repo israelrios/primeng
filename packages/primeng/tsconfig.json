@@ -3,6 +3,9 @@
     "exclude": [
         "node_modules"
     ],
+    "compilerOptions": {
+        "moduleResolution": "bundler"
+    },
     "angularCompilerOptions": {
         "disableTypeScriptVersionCheck": true,
         "fullTemplateTypeCheck": false,

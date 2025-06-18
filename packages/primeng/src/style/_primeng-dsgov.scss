@@ -1,0 +1,111 @@
+//
+// Importa tudo que precisamos do dsgov e talvez até um pouco mais.
+//
+
+@use '@govbr-ds/core/src/core' as govbr;
+
+// Personalizações para o primeng. Tudo que não foi possível definir com os design tokens disponíveis em src/preset
+
+.p-placeholder {
+  @extend .placeholder;
+
+  margin: 0;
+  line-height: 22px; // necessário para que o select tenha o mesmo tamanho do input
+}
+
+.p-inputtext,
+.p-inputwrapper {
+  &.ng-invalid.ng-dirty {
+    border-width: var(--surface-width-md);
+    padding-block: calc(
+      var(--p-form-field-padding-y) - var(--surface-width-md) / 2
+    ); // necessário descontar a nova borda
+  }
+}
+
+.p-select-label,
+.p-multiselect-label,
+.p-inputtext {
+  &:not(.p-placeholder) {
+    font-size: var(--font-size-scale-up-01);
+    line-height: 22px; // necessário para que o select tenha o mesmo tamanho do input
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.p-inputwrapper:not(.p-disabled):hover:not(
+    :has(.p-select-dropdown:hover, .p-multiselect-dropdown:hover, .p-component:hover)
+  ),
+.p-inputtext:enabled:hover {
+  background: linear-gradient(
+    rgba(var(--color-light-rgb), var(--hover)),
+    rgba(var(--color-light-rgb), var(--hover-light))
+  );
+}
+
+.p-select-dropdown,
+.p-multiselect-dropdown {
+  margin: calc(var(--spacing-scale-half) - 1px);
+  height: var(--p-select-dropdown-width);
+}
+
+.p-select-open .p-select-dropdown,
+.p-multiselect-open .p-multiselect-dropdown {
+  transform: rotate(180deg);
+}
+
+.p-select:not(.p-disabled) {
+  .p-select-dropdown:hover,
+  .p-select-clear-icon:hover {
+    background-image: linear-gradient(
+      rgba(var(--interactive-rgb), var(--hover-light)),
+      rgba(var(--interactive-rgb), var(--hover-light))
+    );
+    border-radius: var(--p-border-radius-button);
+  }
+}
+
+.p-select-clear-icon {
+  --padding: calc((var(--p-select-dropdown-width) - var(--p-icon-size)) / 2);
+  padding: var(--padding);
+  margin-right: calc(var(--spacing-scale-half) + 2px);
+  //noinspection CssInvalidFunction
+  transform: translateY(calc(var(--padding) * -1));
+}
+
+.p-select-list-container,
+.p-multiselect-list-container {
+  max-width: calc(100vw - 100px);
+}
+
+.p-multiselect:not(.p-disabled) {
+  .p-multiselect-dropdown:hover,
+  .p-multiselect-clear-icon:hover {
+    background-image: linear-gradient(
+      rgba(var(--interactive-rgb), var(--hover-light)),
+      rgba(var(--interactive-rgb), var(--hover-light))
+    );
+    border-radius: var(--p-border-radius-button);
+  }
+}
+
+.p-multiselect-clear-icon {
+  --padding: calc((var(--p-multiselect-dropdown-width) - var(--p-icon-size)) / 2);
+  --margin: calc(var(--spacing-scale-half) - 1px);
+  padding: var(--padding);
+  margin: var(--margin) 0 var(--margin) 0;
+}
+
+.p-tab {
+  font-size: var(--font-size-scale-up-02);
+  line-height: 1;
+}
+
+.p-datatable-thead > tr > th,
+.p-datatable-tbody > tr > td {
+  font-size: var(--font-size-scale-base);
+}
+
+.p-fieldset.p-component {
+  border: 0;
+}

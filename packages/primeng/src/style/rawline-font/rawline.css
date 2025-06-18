@@ -1,0 +1,161 @@
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local('Rawline'),
+    url('./rawline-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 400;
+  src:
+    local('Rawline'),
+    url('./rawline-400i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 250;
+  src:
+    local('Rawline'),
+    url('./rawline-100.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 250;
+  src:
+    local('Rawline'),
+    url('./rawline-100i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 275;
+  src:
+    local('Rawline'),
+    url('./rawline-200.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 275;
+  src:
+    local('Rawline'),
+    url('./rawline-200i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 300;
+  src:
+    local('Rawline'),
+    url('./rawline-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 300;
+  src:
+    local('Rawline'),
+    url('./rawline-300i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 500;
+  src:
+    local('Rawline'),
+    url('./rawline-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 500;
+  src:
+    local('Rawline'),
+    url('./rawline-500i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 600;
+  src:
+    local('Rawline'),
+    url('./rawline-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 600;
+  src:
+    local('Rawline'),
+    url('./rawline-600i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local('Rawline'),
+    url('./rawline-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 700;
+  src:
+    local('Rawline'),
+    url('./rawline-700i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 800;
+  src:
+    local('Rawline'),
+    url('./rawline-800.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 800;
+  src:
+    local('Rawline'),
+    url('./rawline-800i.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: normal;
+  font-weight: 900;
+  src:
+    local('Rawline'),
+    url('./rawline-900.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rawline';
+  font-style: italic;
+  font-weight: 900;
+  src:
+    local('Rawline'),
+    url('./rawline-900i.woff2') format('woff2');
+}

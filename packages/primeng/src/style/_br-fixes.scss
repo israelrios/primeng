@@ -1,0 +1,26 @@
+//noinspection SpellCheckingInspection
+textarea.p-inputtext {
+  height: auto;
+}
+
+.br-loading,
+.loading {
+  pointer-events: none;
+
+  &,
+  &::before {
+    z-index: 5; // o valor do dsgov é muito alto e faz aparecer em cima de combos.
+  }
+}
+
+.br-button.loading {
+  min-height: auto;
+}
+
+.scroll-to-top {
+  z-index: var(--z-index-layer-4);
+}
+
+.p-dialog.p-confirm-dialog .p-confirm-dialog-message {
+  margin-left: 0; // correção do alinhamento do texto
+}

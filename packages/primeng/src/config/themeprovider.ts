@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { effect, inject, Injectable, signal, untracked } from '@angular/core';
 import { Theme, ThemeService } from '@primeuix/styled';
 import { BaseStyle } from 'primeng/base';
+import { DsGovTheme } from 'primeng/presets';
 
 export type ThemeType = { preset?: any; options?: any } | 'none' | boolean | undefined;
 
@@ -42,6 +43,12 @@ export class ThemeProvider {
                     this.onThemeChange(themeValue);
                 }
                 this.isThemeChanged = false;
+            }
+        });
+        this.theme.set({
+            preset: DsGovTheme,
+            options: {
+                darkModeSelector: 'none'
             }
         });
     }
