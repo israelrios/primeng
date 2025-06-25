@@ -1,0 +1,5 @@
+.search-active {
+    .menu-item {
+        padding-left: calc(var(--indent-level, 1) * var(--spacing-scale-2x)) !important;
+    }
+}

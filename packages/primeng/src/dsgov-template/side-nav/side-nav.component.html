@@ -1,0 +1,26 @@
+<!-- side bar main wrapper -->
+<div class="br-menu" id="main-navigation" [class.active]="showSideNav()">
+    <!-- side bar-->
+    <div class="menu-container">
+        <div class="menu-panel col-sm-6 col-md-5 col-lg-4">
+            <div class="menu-header">
+                <div class="menu-title">
+                    <img [ngSrc]="templateConfig.logoUrl" [alt]="templateConfig.logoAltText" height="40" width="97" [priority]="true" />
+                    <span>{{ templateConfig.appName }}</span>
+                </div>
+                <div class="menu-close">
+                    <button class="br-button circle" type="button" aria-label="Fechar o menu" data-dismiss="menu" (click)="onSidebarClose()">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- side bar content -->
+            <nav class="menu-body">
+                <s-side-menu></s-side-menu>
+            </nav>
+        </div>
+
+        <div class="menu-scrim" data-dismiss="menu" (keyup)="onSidebarClose()" (click)="onSidebarClose()"></div>
+    </div>
+</div>

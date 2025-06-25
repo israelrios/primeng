@@ -1,0 +1,20 @@
+:host ::ng-deep .br-message .content {
+    padding-left: 0;
+}
+
+.messages-container .content .title {
+    padding-right: 10px;
+}
+
+.messages-container {
+    margin-top: 5px;
+}
+
+/* diminuir margin-bottom dsgov */
+.br-message {
+    margin-bottom: 5px;
+}
+
+.br-message .content p {
+    margin-bottom: 0;
+}

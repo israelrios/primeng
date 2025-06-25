@@ -1,0 +1,66 @@
+<div class="container-fluid">
+    <div class="header-top">
+        <div class="header-logo">
+            <!--suppress AngularNgOptimizedImage -->
+            <img [src]="templateConfig.logoUrl" [alt]="templateConfig.logoAltText" loading="eager" fetchpriority="high" />
+            <span class="br-divider vertical mx-half mx-sm-1"></span>
+            <div class="header-sign">{{ templateConfig.appName }}</div>
+        </div>
+        <div class="header-actions">
+            <ng-content select="[s-header-actions]"></ng-content>
+            <div class="header-functions dropdown" [class.show]="toggleFunctions">
+                <button class="br-button circle small" type="button" data-toggle="dropdown" (click)="toggleFunctions = !toggleFunctions" [class.active]="toggleFunctions" aria-label="Abrir Funcionalidades do Sistema">
+                    <i class="fas fa-th" aria-hidden="true"></i>
+                </button>
+                <div class="br-list">
+                    <div class="header">
+                        <div class="title">Funcionalidades do Sistema</div>
+                    </div>
+                    <div class="align-items-center br-item">
+                        <button class="br-button circle small" (click)="logoutUser()" type="button" title="Sair"><i class="fas fa-sign-out-alt" aria-hidden="true"></i><span class="text">Sair</span></button>
+                    </div>
+                </div>
+            </div>
+            <span class="br-divider vertical mx-half mx-sm-1"></span>
+            <div class="header-login">
+                <div #avatar class="header-avatar" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" aria-label="Nome do Usuário e Unidade" [attr.aria-describedby]="showTooltip ? 'tooltip-content' : null">
+                    <button class="br-button circle" tabindex="0" type="button" (focus)="showUserInfo()" (blur)="hideUserInfo()" (keydown.escape)="hideUserInfo()">
+                        <span class="br-avatar">
+                            <span class="image letter text-interactive">
+                                @if (initials(); as initialsValue) {
+                                    {{ initialsValue }}
+                                } @else {
+                                    <img [ngSrc]="user()?.avatarUrl() || 'images/user-default.png'" alt="Avatar do usuário" height="160" width="160" />
+                                }
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom">
+        <div class="header-menu">
+            <div class="header-menu-trigger">
+                <button class="br-button circle small" type="button" (click)="toggleMenu()" data-toggle="menu" aria-label="Abrir Menu Principal">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="header-info">
+                <ng-content select="[s-header-info]">
+                    <div class="header-title">{{ pageTitle() }}</div>
+                </ng-content>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showTooltip) {
+    <div id="tooltip-content" class="custom-tooltip" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" (focus)="showUserInfo()" (blur)="hideUserInfo()" [style.top.px]="tooltipTop" [style.right.px]="tooltipRight" role="tooltip">
+        <div class="user-info-tooltip">
+            <div class="user-name">{{ user()?.name() }}</div>
+            <div class="label">Unidade</div>
+            <div>{{ user()?.unitName() }}</div>
+        </div>
+    </div>
+}

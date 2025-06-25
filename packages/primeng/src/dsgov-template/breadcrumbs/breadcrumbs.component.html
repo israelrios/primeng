@@ -1,0 +1,43 @@
+<ol class="crumb-list">
+    <li class="crumb home">
+        <a [href]="homeUrl()" class="br-button circle" title="{{ homeName() }}">
+            <span class="sr-only">{{ homeName() }}</span>
+            <i class="fas fa-home" aria-hidden="true"></i>
+        </a>
+    </li>
+
+    @for (breadcrumb of breadcrumbs$ | async; track breadcrumb.route; let last = $last; let i = $index) {
+        @switch (showItem(i, last)) {
+            @case ('LINK') {
+                <li class="crumb">
+                    <i class="icon fas fa-chevron-right"></i>
+                    @if (breadcrumb.clickable) {
+                        <a [routerLink]="breadcrumb.route" [queryParams]="breadcrumb.queryParams" [fragment]="breadcrumb.fragment">{{ breadcrumb.label }}</a>
+                    } @else {
+                        <span class="info-crumb">{{ breadcrumb.label }}</span>
+                    }
+                </li>
+            }
+            @case ('NONE') {
+                <li class="crumb">
+                    <i class="icon fas fa-chevron-right"></i>
+                </li>
+            }
+            @case ('REDUCE') {
+                <li class="crumb menu-mobil">
+                    <a class="br-button circle" (click)="showCompletePath()">
+                        <span class="icon fas fa-folder-plus"></span>
+                    </a>
+                </li>
+            }
+            @case ('LAST') {
+                <li class="crumb" data-active="active">
+                    <i class="icon fas fa-chevron-right"></i>
+                    @if (last) {
+                        <span aria-current="page">{{ breadcrumb.label }}</span>
+                    }
+                </li>
+            }
+        }
+    }
+</ol>

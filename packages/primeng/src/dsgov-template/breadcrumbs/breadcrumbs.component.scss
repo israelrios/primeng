@@ -1,0 +1,8 @@
+.br-breadcrumb .crumb-list .crumb .br-button a:not(:disabled):hover {
+    background-image: none;
+}
+
+.crumb-list .crumb .info-crumb {
+    margin: 0 var(--spacing-scale-base);
+    white-space: nowrap;
+}

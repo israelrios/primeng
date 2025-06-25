@@ -1,0 +1,34 @@
+.custom-tooltip {
+    position: absolute;
+    z-index: 10;
+}
+
+.user-info-tooltip {
+    background-color: var(--background);
+    color: var(--color);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: var(--surface-shadow-md);
+    border: 1px solid var(--border-color);
+    min-width: 200px;
+}
+
+.user-info-tooltip .user-name {
+    font-weight: var(--font-weight-semi-bold);
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.user-info-tooltip label {
+    font-size: 0.9em;
+    color: var(--color-secondary-07);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.header-logo {
+    img {
+        aspect-ratio: 97/40;
+        height: var(--header-logo-size);
+    }
+}

@@ -1,0 +1,22 @@
+<a #link class="menu-item" tabindex="0" [attr.href]="href()" role="menuitem" [hidden]="hidden()" (click)="onClick(link, $event)">
+    @if (hasFilhos()) {
+        <span class="icon">
+            <i class="fas" [ngClass]="menu().icon || 'fa-list-alt'" aria-hidden="true"></i>
+        </span>
+    }
+
+    <span class="content">{{ menu().descricao }}</span>
+
+    @if (hasFilhos()) {
+        <span class="support">
+            <i class="fas fa-angle-right" aria-hidden="true"></i>
+        </span>
+    }
+</a>
+@if (hasFilhos()) {
+    <ul role="directory">
+        @for (item of menu().filhos; track item.id) {
+            <li s-menu-item [menu]="item"></li>
+        }
+    </ul>
+}

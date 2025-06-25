@@ -1,0 +1,33 @@
+<div class="messages-container">
+    @for (message of messages(); track message) {
+        <div class="br-message" [ngClass]="TYPEMAP[message.type].class" role="alert">
+            <div class="icon">
+                <i class="fas fa-lg" [ngClass]="TYPEMAP[message.type].icon"></i>
+                <span class="sr-only">{{ TYPEMAP[message.type].text }}!</span>
+            </div>
+            <div class="content">
+                <span class="message-title">{{ message.title }}</span>
+                @if (message.description) {
+                    <span class="message-body"> {{ message.description }}</span>
+                }
+                @for (detail of message?.details; track detail) {
+                    <p class="text-base">
+                        @if (detail.path) {
+                            <a [href]="detail.path" target="_self">{{ detail.name }}</a>
+                        } @else {
+                            {{ detail }}
+                        }
+                    </p>
+                }
+            </div>
+            @if (message.options && message.options.dismissible) {
+                <div class="close">
+                    <button class="br-button circle small" type="button" data-dismiss="alert" (click)="dismiss(message)">
+                        <i class="fas fa-times"></i>
+                        <span class="sr-only">Fechar</span>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>
