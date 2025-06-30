@@ -329,7 +329,7 @@ importers:
         specifier: ^6.7.2
         version: 6.7.2
       '@govbr-ds/core':
-        specifier: 3.6.2
+        specifier: ^3.6.2
         version: 3.6.2
       '@primeng/themes':
         specifier: workspace:*
