@@ -9,7 +9,7 @@ export interface UserInfo {
     name(): string | undefined;
 
     /** User's organizational unit or department. */
-    unitName(): string | undefined;
+    unitName?(): string | undefined;
 
     /** URL for the user's avatar image. */
     avatarUrl?(): string | undefined;

@@ -59,8 +59,10 @@
     <div id="tooltip-content" class="custom-tooltip" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" (focus)="showUserInfo()" (blur)="hideUserInfo()" [style.top.px]="tooltipTop" [style.right.px]="tooltipRight" role="tooltip">
         <div class="user-info-tooltip">
             <div class="user-name">{{ user()?.name() }}</div>
-            <div class="label">Unidade</div>
-            <div>{{ user()?.unitName() }}</div>
+            @if (user()?.unitName(); as unitName) {
+                <div class="label">Unidade</div>
+                <div>{{ unitName }}</div>
+            }
         </div>
     </div>
 }

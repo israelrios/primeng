@@ -1,8 +1,9 @@
 import { Component, computed, ElementRef, inject, input, viewChild } from '@angular/core';
 import { SideNavService } from '../side-nav.service';
 import { NgOptimizedImage } from '@angular/common';
-import { TEMPLATE_CONFIG, UserInfoProvider } from '../template.config';
+import { TEMPLATE_CONFIG, UserInfo, UserInfoProvider } from '../template.config';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 
 const LOCALE = 'pt-BR';
 
@@ -31,7 +32,7 @@ export class HeaderComponent {
 
     readonly avatarElement = viewChild.required<ElementRef<HTMLElement>>('avatar');
 
-    readonly user = toSignal(this.userInfoProvider.getUser());
+    readonly user = toSignal(this.userInfoProvider.getUser().pipe(map((user) => (user ? this.extendUserWithDefaults(user) : undefined))));
 
     readonly initials = computed(() => {
         const name = this.user()?.name();
@@ -47,6 +48,14 @@ export class HeaderComponent {
 
         return initials;
     });
+
+    private extendUserWithDefaults(user: UserInfo): UserInfo {
+        return {
+            ...user,
+            unitName: user.unitName || (() => undefined),
+            avatarUrl: user.avatarUrl || (() => undefined)
+        };
+    }
 
     toggleMenu() {
         this.navService.showNav.set(true);
