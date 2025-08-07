@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'AngleDoubleRightIcon',
+    selector: '[data-p-icon="angle-double-right"]',
     standalone: true,
-    template: `<i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-angle-double-right'"></i>`
+    template: `<i class="fas fa-angle-double-right"></i>`
 })
 export class AngleDoubleRightIcon extends BaseIcon {}

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'ChevronDownIcon',
+    selector: '[data-p-icon="chevron-down"]',
     standalone: true,
-    template: `<i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-angle-down'"></i>`
+    template: `<i class="fas fa-angle-down"></i>`
 })
 export class ChevronDownIcon extends BaseIcon {}

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'TimesIcon',
+    selector: '[data-p-icon="times"]',
     standalone: true,
-    template: ` <i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-times'"></i> `
+    template: ` <i class="fas fa-times"></i> `
 })
 export class TimesIcon extends BaseIcon {}

@@ -3,14 +3,15 @@ import { uuid } from '@primeuix/utils';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'PlusIcon',
+    selector: '[data-p-icon="plus"]',
     standalone: true,
-    template: `<i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-plus'"></i>`
+    template: `<i class="fas fa-plus"></i>`
 })
 export class PlusIcon extends BaseIcon {
     pathId: string;
 
     ngOnInit() {
+        super.ngOnInit();
         this.pathId = 'url(#' + uuid() + ')';
     }
 }

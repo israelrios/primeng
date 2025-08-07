@@ -3,14 +3,15 @@ import { uuid } from '@primeuix/utils';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'SearchIcon',
+    selector: '[data-p-icon="search"]',
     standalone: true,
-    template: `<i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-search'"></i>`
+    template: `<i class="fas fa-search"></i>`
 })
 export class SearchIcon extends BaseIcon {
     pathId: string;
 
     ngOnInit() {
+        super.ngOnInit();
         this.pathId = 'url(#' + uuid() + ')';
     }
 }

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { BaseIcon } from 'primeng/icons/baseicon';
 
 @Component({
-    selector: 'CalendarIcon',
+    selector: '[data-p-icon="calendar"]',
     standalone: true,
-    template: `<i [attr.aria-label]="ariaLabel" [attr.aria-hidden]="ariaHidden" [attr.role]="role" [class]="getClassNames() + 'fas fa-calendar-alt'"></i>`
+    template: `<i class="fas fa-calendar-alt"></i>`
 })
 export class CalendarIcon extends BaseIcon {}
