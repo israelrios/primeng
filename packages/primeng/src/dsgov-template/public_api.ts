@@ -15,3 +15,4 @@ export * from './menu/menu.service';
 export * from './menu/side-menu.component';
 export * from './menu/menu-item/menu-item.component';
 export * from './side-nav/side-nav.component';
+export * from './pt-br-translation';
