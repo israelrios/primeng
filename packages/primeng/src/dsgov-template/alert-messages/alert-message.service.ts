@@ -63,7 +63,7 @@ export class AlertMessageService {
                 time: Date.now(),
                 options: options || { dismissible: true, delay: 0 }
             };
-            this._messages.update((value) => [...value, message]);
+            this._messages.update((value) => [...value, message!]); //NOSONAR
         } else {
             message.count++;
             if (details) {
