@@ -4,6 +4,8 @@ import { BaseIcon } from 'primeng/icons/baseicon';
 @Component({
     selector: '[data-p-icon="chevron-left"]',
     standalone: true,
-    template: `<i class="fas fa-chevron-left"></i>`
+    template: ` <svg:path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" fill="currentColor" /> `
 })
-export class ChevronLeftIcon extends BaseIcon {}
+export class ChevronLeftIcon extends BaseIcon {
+    viewBox = '0 0 320 512';
+}

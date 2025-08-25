@@ -4,6 +4,15 @@ import { BaseIcon } from 'primeng/icons/baseicon';
 @Component({
     selector: '[data-p-icon="angle-double-left"]',
     standalone: true,
-    template: `<i class="fas fa-angle-double-left"></i>`
+    template: `
+        <svg:path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160zm352-160l-160 160c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L269.3 256 406.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0z"
+            fill="currentColor"
+        />
+    `
 })
-export class AngleDoubleLeftIcon extends BaseIcon {}
+export class AngleDoubleLeftIcon extends BaseIcon {
+    viewBox = '0 0 448 512';
+}
