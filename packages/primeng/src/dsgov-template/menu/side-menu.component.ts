@@ -2,7 +2,7 @@ import { Component, computed, effect, ElementRef, inject, signal, viewChild } fr
 import { MenuItemComponent } from './menu-item/menu-item.component';
 import { TEMPLATE_CONFIG } from '../template.config';
 import { MenuService } from './menu.service';
-import { MenuItem } from './menu.model';
+import { TemplateMenuItem } from './menu.model';
 import { SideNavService } from '../side-nav.service';
 import { removeAccents } from '@primeuix/utils';
 
@@ -47,15 +47,15 @@ export class SideMenuComponent {
         });
     }
 
-    private filterItems(items: MenuItem[], term: string): MenuItem[] {
+    private filterItems(items: TemplateMenuItem[], term: string): TemplateMenuItem[] {
         return items
             .map((item) => {
                 const children = item.filhos ? this.filterItems(item.filhos, term) : undefined;
                 if (children?.length || (!item.filhos?.length && removeAccents(item.descricao).toLowerCase().includes(term))) {
-                    return <MenuItem>{ ...item, filhos: children };
+                    return <TemplateMenuItem>{ ...item, filhos: children };
                 }
                 return null;
             })
-            .filter((item): item is MenuItem => !!item);
+            .filter((item): item is TemplateMenuItem => !!item);
     }
 }

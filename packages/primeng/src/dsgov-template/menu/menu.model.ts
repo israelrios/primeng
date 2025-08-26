@@ -1,10 +1,10 @@
 import { Signal } from '@angular/core';
 
-export interface MenuItem {
+export interface TemplateMenuItem {
     id: number;
     descricao: string;
     url: string | null;
-    filhos: MenuItem[] | null;
+    filhos: TemplateMenuItem[] | null;
     icon?: string;
 }
 
@@ -14,5 +14,5 @@ export interface MenuItem {
  */
 export abstract class MenuProvider {
     /** Returns a signal of the menu items. */
-    abstract readonly menu: Signal<MenuItem[] | undefined>;
+    abstract readonly menu: Signal<TemplateMenuItem[] | undefined>;
 }

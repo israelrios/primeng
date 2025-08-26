@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { LocationStrategy, NgClass } from '@angular/common';
-import { MenuItem } from '../menu.model';
+import { TemplateMenuItem } from '../menu.model';
 import { SideMenuComponent } from '../side-menu.component';
 import { Router } from '@angular/router';
 
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
     }
 })
 export class MenuItemComponent {
-    readonly menu = input.required<MenuItem>();
+    readonly menu = input.required<TemplateMenuItem>();
 
     private readonly router = inject(Router);
     private readonly locationStrategy = inject(LocationStrategy);
