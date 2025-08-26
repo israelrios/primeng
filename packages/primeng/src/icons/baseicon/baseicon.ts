@@ -5,6 +5,7 @@ import { BaseIconStyle } from './style/baseiconstyle';
 
 @Component({
     template: ` <ng-content></ng-content> `,
+    selector: 'svg[data-p-icon="should-not-match-only-for-host-binding-attributes"]',
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
