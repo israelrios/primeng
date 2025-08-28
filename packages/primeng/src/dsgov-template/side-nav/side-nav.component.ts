@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, inject, input, ViewEncapsulation } from '@angular/core';
 import { SideNavService } from '../side-nav.service';
 import { NgOptimizedImage } from '@angular/common';
 import { SideMenuComponent } from '../menu/side-menu.component';
@@ -16,6 +16,7 @@ export class SideNavComponent {
     readonly templateConfig = inject(TEMPLATE_CONFIG);
 
     readonly showSideNav = this.navService.showNav;
+    readonly treeView = input(false);
 
     onSidebarClose() {
         this.navService.showNav.set(false);

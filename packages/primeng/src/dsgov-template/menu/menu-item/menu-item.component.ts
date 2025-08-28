@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
     host: {
         '[class.active]': 'opened',
         '[class.side-menu]': 'hasFilhos()',
-        '[class.search-active]': 'searching()',
+        '[class.tree-view]': 'treeView()',
         '[style.--indent-level]': 'indentLevel'
     }
 })
@@ -29,7 +29,7 @@ export class MenuItemComponent {
 
     hasFilhos = computed(() => !!this.menu().filhos?.length);
 
-    searching = this.sideMenu.searching;
+    treeView = computed(() => this.sideMenu.searching() || this.sideMenu.treeView());
 
     indentLevel = 1;
 
@@ -43,13 +43,13 @@ export class MenuItemComponent {
         this.indentLevel = level;
 
         effect(() => {
-            this.opened = this.searching() && !!this.menu().filhos?.length;
+            this.opened = this.treeView() && !!this.menu().filhos?.length;
         });
     }
 
     hidden = computed(() => {
         const activeMenu = this.sideMenu.activeMenu();
-        return !this.sideMenu.searching() && activeMenu !== this && activeMenu !== this.parentItem;
+        return !this.treeView() && activeMenu !== this && activeMenu !== this.parentItem;
     });
 
     href = computed(() => {

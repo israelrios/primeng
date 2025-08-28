@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { MenuItemComponent } from './menu-item/menu-item.component';
 import { TEMPLATE_CONFIG } from '../template.config';
 import { MenuService } from './menu.service';
@@ -20,6 +20,7 @@ export class SideMenuComponent {
     readonly searchTerm = signal('');
 
     readonly searching = computed(() => this.searchTerm().length > 0);
+    readonly treeView = input(false);
 
     readonly filteredMenuItems = computed(() => {
         const term = removeAccents(this.searchTerm()).toLowerCase();
