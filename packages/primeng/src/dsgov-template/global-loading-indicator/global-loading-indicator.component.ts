@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -14,24 +14,25 @@ export class GlobalLoadingIndicatorComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly destroyRef = inject(DestroyRef);
 
-    private readonly loading$ = new BehaviorSubject<boolean>(false);
+    private readonly loadingTrigger$ = new Subject<boolean>();
 
-    loading = false;
+    loading = signal(false);
 
     ngOnInit(): void {
-        this.loading$.pipe(takeUntilDestroyed(this.destroyRef), debounceTime(300)).subscribe((loading) => {
-            this.loading = loading;
+        // Set up debounced loading state updates
+        this.loadingTrigger$.pipe(takeUntilDestroyed(this.destroyRef), debounceTime(300)).subscribe((loading) => {
+            this.loading.set(loading);
         });
 
         // exibe o indicador de carregamento global só na transição entre páginas
         this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (event) => {
                 if (event instanceof NavigationStart) {
-                    this.loading$.next(true);
+                    this.loadingTrigger$.next(true);
                 } else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) {
-                    this.loading$.next(false);
+                    this.loadingTrigger$.next(false);
                     // fecha imediatamente
-                    this.loading = false;
+                    this.loading.set(false);
                 }
             }
         });

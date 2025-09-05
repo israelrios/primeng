@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, input, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { SideNavService } from '../side-nav.service';
 import { NgOptimizedImage } from '@angular/common';
 import { TEMPLATE_CONFIG, UserInfo, UserInfoProvider } from '../template.config';
@@ -14,18 +14,19 @@ const LOCALE = 'pt-BR';
     imports: [NgOptimizedImage],
     host: {
         class: 'br-header'
-    }
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
     private readonly navService = inject(SideNavService);
     readonly templateConfig = inject(TEMPLATE_CONFIG);
     private readonly userInfoProvider = inject(UserInfoProvider);
 
-    showTooltip = false;
-    tooltipTop = 0;
-    tooltipRight = 0;
+    readonly showTooltip = signal(false);
+    readonly tooltipTop = signal(0);
+    readonly tooltipRight = signal(0);
     private hideUserInfoTimeout = 0;
-    toggleFunctions = false;
+    readonly showSystemFunctions = signal(false);
 
     readonly showSearch = input(false);
     readonly pageTitle = input.required<string>();
@@ -49,6 +50,74 @@ export class HeaderComponent {
         return initials;
     });
 
+    readonly hasUserAvatar = computed(() => {
+        const user = this.user();
+        const avatarUrl = user?.avatarUrl ? user.avatarUrl() : undefined;
+        return avatarUrl && avatarUrl !== 'images/user-default.png';
+    });
+
+    readonly userDisplayName = computed(() => {
+        const user = this.user();
+        return user ? user.name() : 'Usuário';
+    });
+
+    readonly userUnitName = computed(() => {
+        const user = this.user();
+        return user?.unitName ? user.unitName() : undefined;
+    });
+
+    readonly showUserInitials = computed(() => {
+        return this.initials() && !this.hasUserAvatar();
+    });
+
+    readonly avatarAccessibilityLabel = computed(() => {
+        const userName = this.userDisplayName();
+        const unitName = this.userUnitName();
+        return unitName ? `${userName} - ${unitName}` : userName;
+    });
+
+    constructor() {
+        // Escape to close dropdown
+        effect(() => {
+            if (this.showSystemFunctions()) {
+                // Focus management when the dropdown opens
+                const handleEscape = (event: KeyboardEvent) => {
+                    if (event.key === 'Escape') {
+                        this.showSystemFunctions.set(false);
+                        event.preventDefault();
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
+
+                // Cleanup when the dropdown closes
+                return () => {
+                    document.removeEventListener('keydown', handleEscape);
+                };
+            }
+            return undefined;
+        });
+
+        // Effect to handle click outside to close dropdown
+        effect(() => {
+            if (this.showSystemFunctions()) {
+                const handleClickOutside = (event: Event) => {
+                    const target = event.target as HTMLElement;
+                    if (!target.closest('.header-functions')) {
+                        this.showSystemFunctions.set(false);
+                    }
+                };
+                setTimeout(() => {
+                    document.addEventListener('click', handleClickOutside);
+                }, 0);
+
+                return () => {
+                    document.removeEventListener('click', handleClickOutside);
+                };
+            }
+            return undefined;
+        });
+    }
+
     private extendUserWithDefaults(user: UserInfo): UserInfo {
         return {
             ...user,
@@ -61,17 +130,22 @@ export class HeaderComponent {
         this.navService.showNav.set(true);
     }
 
+    toggleSystemFunctions(event?: Event) {
+        event?.stopPropagation();
+        this.showSystemFunctions.update((value) => !value);
+    }
+
     logoutUser() {
         this.userInfoProvider.logout();
     }
 
     showUserInfo() {
         this.clearHideUserInfoTimeout();
-        this.showTooltip = true;
+        this.showTooltip.set(true);
         const targetElement = this.avatarElement().nativeElement;
         const rect = targetElement.getBoundingClientRect();
-        this.tooltipTop = window.scrollY + rect.bottom; // Posiciona abaixo do avatar
-        this.tooltipRight = document.body.getBoundingClientRect().right - rect.right; // Alinha com a margem direita do avatar
+        this.tooltipTop.set(window.scrollY + rect.bottom); // Posiciona abaixo do avatar
+        this.tooltipRight.set(document.body.getBoundingClientRect().right - rect.right); // Alinha com a margem direita do avatar
     }
 
     private clearHideUserInfoTimeout() {
@@ -81,6 +155,6 @@ export class HeaderComponent {
 
     hideUserInfo() {
         this.clearHideUserInfoTimeout();
-        this.hideUserInfoTimeout = window.setTimeout(() => (this.showTooltip = false), 100);
+        this.hideUserInfoTimeout = window.setTimeout(() => this.showTooltip.set(false), 100);
     }
 }

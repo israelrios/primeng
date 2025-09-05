@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
  */
 export interface UserInfo {
     /** User's full name. */
-    name(): string | undefined;
+    name(): string;
 
     /** User's organizational unit or department. */
     unitName?(): string | undefined;

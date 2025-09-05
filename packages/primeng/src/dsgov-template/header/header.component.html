@@ -8,8 +8,16 @@
         </div>
         <div class="header-actions">
             <ng-content select="[s-header-actions]"></ng-content>
-            <div class="header-functions dropdown" [class.show]="toggleFunctions">
-                <button class="br-button circle small" type="button" data-toggle="dropdown" (click)="toggleFunctions = !toggleFunctions" [class.active]="toggleFunctions" aria-label="Abrir Funcionalidades do Sistema">
+            <div class="header-functions dropdown" [class.show]="showSystemFunctions()">
+                <button
+                    class="br-button circle small"
+                    type="button"
+                    data-toggle="dropdown"
+                    (click)="toggleSystemFunctions($event)"
+                    [class.active]="showSystemFunctions()"
+                    aria-label="Abrir Funcionalidades do Sistema"
+                    [attr.aria-expanded]="showSystemFunctions()"
+                >
                     <i class="fas fa-th" aria-hidden="true"></i>
                 </button>
                 <div class="br-list">
@@ -23,14 +31,14 @@
             </div>
             <span class="br-divider vertical mx-half mx-sm-1"></span>
             <div class="header-login">
-                <div #avatar class="header-avatar" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" aria-label="Nome do Usuário e Unidade" [attr.aria-describedby]="showTooltip ? 'tooltip-content' : null">
-                    <button class="br-button circle" tabindex="0" type="button" (focus)="showUserInfo()" (blur)="hideUserInfo()" (keydown.escape)="hideUserInfo()">
+                <div #avatar class="header-avatar" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" [attr.aria-label]="avatarAccessibilityLabel()" [attr.aria-describedby]="showTooltip() ? 'tooltip-content' : null">
+                    <button class="br-button circle" tabindex="0" type="button" (click)="showUserInfo()" (focus)="showUserInfo()" (blur)="hideUserInfo()" (keydown.escape)="hideUserInfo()" [attr.aria-label]="'Avatar de ' + userDisplayName()">
                         <span class="br-avatar">
                             <span class="image letter text-interactive">
-                                @if (initials(); as initialsValue) {
-                                    {{ initialsValue }}
+                                @if (showUserInitials()) {
+                                    {{ initials() }}
                                 } @else {
-                                    <img [ngSrc]="user()?.avatarUrl() || 'images/user-default.png'" alt="Avatar do usuário" height="160" width="160" />
+                                    <img [ngSrc]="user()?.avatarUrl?.() || 'images/user-default.png'" [alt]="'Avatar de ' + userDisplayName()" height="160" width="160" />
                                 }
                             </span>
                         </span>
@@ -55,11 +63,11 @@
     </div>
 </div>
 
-@if (showTooltip) {
-    <div id="tooltip-content" class="custom-tooltip" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" (focus)="showUserInfo()" (blur)="hideUserInfo()" [style.top.px]="tooltipTop" [style.right.px]="tooltipRight" role="tooltip">
+@if (showTooltip()) {
+    <div id="tooltip-content" class="custom-tooltip" (mouseenter)="showUserInfo()" (mouseleave)="hideUserInfo()" (focus)="showUserInfo()" (blur)="hideUserInfo()" [style.top.px]="tooltipTop()" [style.right.px]="tooltipRight()" role="tooltip">
         <div class="user-info-tooltip">
-            <div class="user-name">{{ user()?.name() }}</div>
-            @if (user()?.unitName(); as unitName) {
+            <div class="user-name">{{ userDisplayName() }}</div>
+            @if (userUnitName(); as unitName) {
                 <div class="label">Unidade</div>
                 <div>{{ unitName }}</div>
             }
