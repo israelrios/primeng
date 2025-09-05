@@ -94,7 +94,6 @@ export class HeaderComponent {
                     document.removeEventListener('keydown', handleEscape);
                 });
             }
-            return undefined;
         });
 
         // Effect to handle click outside to close dropdown
@@ -114,7 +113,6 @@ export class HeaderComponent {
                     document.removeEventListener('click', handleClickOutside);
                 });
             }
-            return undefined;
         });
     }
 
