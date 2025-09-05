@@ -78,7 +78,7 @@ export class HeaderComponent {
 
     constructor() {
         // Escape to close dropdown
-        effect(() => {
+        effect((onCleanup) => {
             if (this.showSystemFunctions()) {
                 // Focus management when the dropdown opens
                 const handleEscape = (event: KeyboardEvent) => {
@@ -90,15 +90,15 @@ export class HeaderComponent {
                 document.addEventListener('keydown', handleEscape);
 
                 // Cleanup when the dropdown closes
-                return () => {
+                onCleanup(() => {
                     document.removeEventListener('keydown', handleEscape);
-                };
+                });
             }
             return undefined;
         });
 
         // Effect to handle click outside to close dropdown
-        effect(() => {
+        effect((onCleanup) => {
             if (this.showSystemFunctions()) {
                 const handleClickOutside = (event: Event) => {
                     const target = event.target as HTMLElement;
@@ -110,9 +110,9 @@ export class HeaderComponent {
                     document.addEventListener('click', handleClickOutside);
                 }, 0);
 
-                return () => {
+                onCleanup(() => {
                     document.removeEventListener('click', handleClickOutside);
-                };
+                });
             }
             return undefined;
         });
