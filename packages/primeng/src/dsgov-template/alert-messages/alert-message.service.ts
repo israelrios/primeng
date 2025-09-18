@@ -8,7 +8,7 @@ import { AlertMessageOptions } from './alert-message-options.model';
 import { AlertMessageType } from './alert-message-type.model';
 import { MessageService } from 'primeng/api';
 
-const MIN_DISPLAY_TIME = 4000; //em millis
+const MIN_DISPLAY_TIME = 3000; //em millis
 
 @Injectable({
     providedIn: 'root'
