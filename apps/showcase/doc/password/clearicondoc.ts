@@ -1,9 +1,9 @@
+import { AppCode } from '@/components/doc/app.code';
+import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
 import { Code } from '@/domain/code';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
-import { AppCode } from '@/components/doc/app.code';
-import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
 
 @Component({
     selector: 'clear-icon-doc',
@@ -11,14 +11,10 @@ import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
     imports: [FormsModule, PasswordModule, AppCode, AppDocSectionText],
     template: `
         <app-docsectiontext>
-            <p>The <i>clearIcon</i> template allows you to customize the icon used to clear the input field.</p>
+            <p>When <i>showClear</i> is enabled, a clear icon is displayed to clear the value.</p>
         </app-docsectiontext>
         <div class="card flex justify-center">
-            <p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true">
-                <ng-template #clearicon>
-                    <i class="pi pi-times-circle cursor-pointer"></i>
-                </ng-template>
-            </p-password>
+            <p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true" inputStyleClass="w-56" />
         </div>
         <app-code [code]="code" selector="password-clear-icon-demo"></app-code>
     `
@@ -27,18 +23,10 @@ export class ClearIconDoc {
     value!: string;
 
     code: Code = {
-        basic: `<p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true">
-    <ng-template #clearicon>
-        <i class="pi pi-times-circle cursor-pointer"></i>
-    </ng-template>
-</p-password>`,
+        basic: `<p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true" inputStyleClass="w-56" />`,
 
         html: `<div class="card flex justify-center">
-    <p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true">
-        <ng-template #clearicon>
-            <i class="pi pi-times-circle cursor-pointer"></i>
-        </ng-template>
-    </p-password>
+    <p-password [(ngModel)]="value" [feedback]="false" autocomplete="off" [showClear]="true" inputStyleClass="w-56" />
 </div>`,
 
         typescript: `import { Component } from '@angular/core';

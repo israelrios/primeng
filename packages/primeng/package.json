@@ -1,6 +1,6 @@
 {
     "name": "primeng",
-    "version": "20.1.2-dsgov.2",
+    "version": "20.2.0",
     "author": "PrimeTek Informatics",
     "description": "PrimeNG is an open source UI library for Angular featuring a rich set of 80+ components, a theme designer, various theme alternatives such as Material, Bootstrap, Tailwind, premium templates and professional support. In addition, it integrates with PrimeBlock, which has 370+ ready to use UI blocks to build spectacular applications in no time.",
     "homepage": "https://primeng.org/",
@@ -37,7 +37,7 @@
         "release:dsgov": "pnpm run build && pnpm publish --tag dsgov --no-git-checks",
         "dev:link": "pnpm link --global && npm link",
         "lint": "ng lint",
-        "test:unit": "ng test primeng --watch=false",
+        "test:unit": "ng test primeng --watch=false --browsers=ChromeHeadless",
         "test:unit:watch": "ng test primeng",
         "test:unit:coverage": "ng test primeng --coverage",
         "dist:pack": "pnpm run build && pnpm pack --pack-destination ./pack && tar -xzf dist/pack/primeng-*.tgz --strip-components=1 -C dist/pack && rm -f dist/pack/primeng-*.tgz"
