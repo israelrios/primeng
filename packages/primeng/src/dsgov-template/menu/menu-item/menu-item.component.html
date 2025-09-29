@@ -1,5 +1,5 @@
 <a #link class="menu-item" tabindex="0" [attr.href]="href()" role="menuitem" [hidden]="hidden()" (click)="onClick(link, $event)">
-    @if (hasFilhos()) {
+    @if (hasFilhos() || menu().icon) {
         <span class="icon">
             <i class="fas" [ngClass]="menu().icon || 'fa-list-alt'" aria-hidden="true"></i>
         </span>
