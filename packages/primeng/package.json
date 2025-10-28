@@ -10,6 +10,9 @@
         "url": "https://github.com/primefaces/primeng.git",
         "directory": "packages/primeng"
     },
+    "maintainers": [
+        "Israel Rios"
+    ],
     "bugs": {
         "url": "https://github.com/primefaces/primeng/issues"
     },
