@@ -181,6 +181,214 @@ export const DsGovTheme = definePreset(lara, <Theme>{
         }
     },
     components: {
+        button: {
+            root: {
+                borderRadius: '100em',
+                paddingX: 'var(--spacing-scale-3x)',
+                paddingY: '0',
+                gap: 'var(--spacing-scale-half)',
+                iconOnlyWidth: '40px',
+                sm: {
+                    fontSize: 'var(--font-size-scale-up-01)',
+                    paddingX: 'var(--spacing-scale-3x)',
+                    paddingY: '0',
+                    iconOnlyWidth: '32px'
+                },
+                lg: {
+                    fontSize: 'var(--font-size-scale-up-01)',
+                    paddingX: 'var(--spacing-scale-3x)',
+                    paddingY: '0',
+                    iconOnlyWidth: '48px'
+                },
+                label: {
+                    fontWeight: 'var(--font-weight-semi-bold)'
+                },
+                focusRing: {
+                    width: 'var(--focus-width)',
+                    style: 'var(--focus-style)',
+                    offset: 'var(--focus-offset)'
+                }
+            },
+            colorScheme: {
+                light: {
+                    root: {
+                        primary: {
+                            background: 'var(--interactive-light)',
+                            hoverBackground: 'var(--interactive-light)',
+                            activeBackground: 'var(--interactive-light)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--color-dark)',
+                            hoverColor: 'var(--color-dark)',
+                            activeColor: 'var(--color-dark)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        secondary: {
+                            background: 'var(--background-light)',
+                            hoverBackground: 'var(--background-light)',
+                            activeBackground: 'var(--background-light)',
+                            borderColor: 'var(--interactive)',
+                            hoverBorderColor: 'var(--interactive)',
+                            activeBorderColor: 'var(--interactive)',
+                            color: 'var(--interactive)',
+                            hoverColor: 'var(--interactive)',
+                            activeColor: 'var(--interactive)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        success: {
+                            background: 'var(--success)',
+                            hoverBackground: 'var(--success)',
+                            activeBackground: 'var(--success)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--color-dark)',
+                            hoverColor: 'var(--color-dark)',
+                            activeColor: 'var(--color-dark)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        danger: {
+                            background: 'var(--danger)',
+                            hoverBackground: 'var(--danger)',
+                            activeBackground: 'var(--danger)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--color-dark)',
+                            hoverColor: 'var(--color-dark)',
+                            activeColor: 'var(--color-dark)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        warn: {
+                            background: 'var(--warning)',
+                            hoverBackground: 'var(--warning)',
+                            activeBackground: 'var(--warning)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--color-light)',
+                            hoverColor: 'var(--color-light)',
+                            activeColor: 'var(--color-light)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        info: {
+                            background: 'var(--info)',
+                            hoverBackground: 'var(--info)',
+                            activeBackground: 'var(--info)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--color-dark)',
+                            hoverColor: 'var(--color-dark)',
+                            activeColor: 'var(--color-dark)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        },
+                        contrast: {
+                            background: 'var(--interactive-dark)',
+                            hoverBackground: 'var(--interactive-dark)',
+                            activeBackground: 'var(--interactive-dark)',
+                            borderColor: 'transparent',
+                            hoverBorderColor: 'transparent',
+                            activeBorderColor: 'transparent',
+                            color: 'var(--background-dark)',
+                            hoverColor: 'var(--background-dark)',
+                            activeColor: 'var(--background-dark)',
+                            focusRing: {
+                                color: 'var(--focus)',
+                                shadow: 'none'
+                            }
+                        }
+                    }
+                }
+            },
+            css: /*css*/ `
+.p-button {
+    height: 40px;
+    border-width: 0;
+    font-weight: var(--font-weight-semi-bold);
+    --interactive-rgb: var(--color-dark-rgb);
+}
+
+.p-button:not(:disabled):hover {
+    background-image: linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)));
+}
+
+.p-button:not(:disabled):active {
+    background-image: linear-gradient(rgba(var(--interactive-rgb), var(--pressed)), rgba(var(--interactive-rgb), var(--pressed)));
+}
+
+.p-button:not(.p-button-secondary):not(.p-button-outlined):not(:disabled):hover,
+.p-button:not(.p-button-secondary):not(.p-button-outlined):not(:disabled):active {
+    border-width: 0;
+}
+
+.p-button.p-button-secondary{
+    --interactive-rgb: var(--interactive-light-rgb);
+}
+
+.p-button.p-button-warn,
+.p-button.p-button-warning {
+    --interactive-rgb: var(--color-light-rgb);
+}
+
+.p-button.p-button-sm {
+    height: 32px;
+}
+
+.p-button.p-button-lg {
+    height: 48px;
+}
+
+.p-button.p-button-icon-only {
+    padding-inline: 0;
+    width: 40px;
+    border-radius: 50%;
+}
+
+.p-button.p-button-sm.p-button-icon-only {
+    width: 32px;
+    height: 32px;
+}
+
+.p-button.p-button-lg.p-button-icon-only {
+    width: 48px;
+    height: 48px;
+}
+
+.p-button.p-button-secondary,
+.p-button.p-button-secondary:not(:disabled):hover,
+.p-button.p-button-secondary:not(:disabled):active {
+    border-width: 1px;
+}
+
+.p-button:disabled {
+    cursor: not-allowed;
+}
+
+.p-button:not(:disabled):focus {
+    outline: none;
+}
+`
+        },
         card: {
             root: {
                 shadow: 'var(--surface-shadow-sm);'
