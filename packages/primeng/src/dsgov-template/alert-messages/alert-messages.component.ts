@@ -25,6 +25,7 @@ const MessageTypeMap: { [key: string]: MessageTypeConf } = {
 })
 export class AlertMessagesComponent {
     readonly onlyFor = input<string>();
+    readonly scrollToTop = input<boolean>(true);
 
     TYPEMAP = MessageTypeMap;
 
@@ -38,7 +39,7 @@ export class AlertMessagesComponent {
 
     constructor() {
         effect(() => {
-            if (this.messages().length) {
+            if (this.scrollToTop() && this.messages().length) {
                 window.scrollTo(0, 0);
             }
         });
