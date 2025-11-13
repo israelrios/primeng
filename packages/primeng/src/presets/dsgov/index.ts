@@ -181,6 +181,110 @@ export const DsGovTheme = definePreset(lara, <Theme>{
         }
     },
     components: {
+        accordion: {
+            panel: {
+                borderWidth: '0',
+                borderColor: 'transparent'
+            },
+            header: {
+                color: 'var(--interactive)',
+                hoverColor: 'var(--interactive)',
+                activeColor: 'var(--interactive)',
+                activeHoverColor: 'var(--interactive)',
+                padding: 'var(--spacing-scale-2x) 0',
+                fontWeight: 'var(--font-weight-medium)',
+                borderRadius: '0',
+                borderWidth: '0 0 1px 0',
+                borderColor: 'var(--color-secondary-04)',
+                background: 'transparent',
+                hoverBackground: 'linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)))',
+                activeBackground: 'transparent',
+                activeHoverBackground: 'linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)))',
+                focusRing: {
+                    width: 'var(--focus-width)',
+                    style: 'var(--focus-style)',
+                    color: 'var(--focus)',
+                    offset: 'var(--focus-offset)',
+                    shadow: 'none'
+                },
+                toggleIcon: {
+                    color: 'var(--interactive)',
+                    hoverColor: 'var(--interactive)',
+                    activeColor: 'var(--interactive)',
+                    activeHoverColor: 'var(--interactive)'
+                },
+                first: {
+                    topBorderRadius: '0',
+                    borderWidth: '0 0 1px 0'
+                },
+                last: {
+                    bottomBorderRadius: '0',
+                    activeBottomBorderRadius: '0'
+                }
+            },
+            content: {
+                borderWidth: '0',
+                borderColor: 'transparent',
+                background: 'transparent',
+                color: 'var(--text-color)',
+                padding: 'var(--spacing-scale-base) var(--spacing-scale-8x) var(--spacing-scale-2x)'
+            },
+            colorScheme: {
+                light: {
+                    header: {
+                        background: 'transparent',
+                        hoverBackground: 'linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)))',
+                        activeBackground: 'transparent',
+                        activeHoverBackground: 'linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)))'
+                    }
+                }
+            },
+            css: /*css*/ `
+.p-accordion {
+    border-top: 1px solid var(--color-secondary-04);
+}
+
+.p-accordionpanel {
+    border-bottom: 0;
+}
+
+.p-accordionheader {
+    width: 100%;
+    font-size: var(--font-size-scale-up-01);
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.p-accordionpanel.p-accordionpanel-active > .p-accordionheader {
+    border-bottom-width: 0;
+    font-weight: var(--font-weight-semi-bold);
+}
+
+.p-accordionheader .p-icon {
+    order: -1;
+    margin-inline: var(--spacing-scale-baseh) var(--spacing-scale-2x);
+}
+
+.p-accordionpanel.p-accordionpanel-active > .p-accordioncontent > .p-accordioncontent-content {
+    border-bottom: 1px solid var(--color-secondary-04);
+}
+
+.p-accordioncontent-content {
+    font-size: var(--font-size-scale-base);
+    margin: 0 var(--spacing-scale-base);
+}
+
+.p-accordioncontent-content *:last-child {
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 576px) {
+    .p-accordion .p-accordioncontent-content {
+        padding-inline: 10px;
+    }
+}
+`
+        },
         button: {
             root: {
                 borderRadius: '100em',

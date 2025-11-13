@@ -22,7 +22,7 @@ export interface AccordionTabOpenEvent {
     /**
      * Opened tab index.
      */
-    index: number;
+    index: string | number;
 }
 
 /**
@@ -70,7 +70,7 @@ export class AccordionPanel extends BaseComponent {
      * @defaultValue undefined
      * @group Props
      */
-    value = model<undefined | null | string | number | string[] | number[]>(undefined);
+    value = model.required<string | number>();
     /**
      * Disables the tab when enabled.
      * @defaultValue false
@@ -89,6 +89,7 @@ export class AccordionPanel extends BaseComponent {
 
     _componentStyle = inject(AccordionStyle);
 }
+// noinspection AngularUnusedComponentImport
 /**
  * AccordionHeader is a helper component for Accordion component.
  * @group Components
@@ -103,12 +104,12 @@ export class AccordionPanel extends BaseComponent {
             <ng-template *ngTemplateOutlet="toggleicon; context: { active: active() }"></ng-template>
         } @else {
             <ng-container *ngIf="active()">
-                <span *ngIf="pcAccordion.collapseIcon" [class]="pcAccordion.collapseIcon" [ngClass]="pcAccordion.iconClass" [attr.aria-hidden]="true"></span>
-                <svg data-p-icon="chevron-up" *ngIf="!pcAccordion.collapseIcon" [class]="pcAccordion.iconClass" [attr.aria-hidden]="true" />
+                <span *ngIf="pcAccordion.collapseIcon" [class]="pcAccordion.collapseIcon" [attr.aria-hidden]="true"></span>
+                <svg data-p-icon="chevron-up" *ngIf="!pcAccordion.collapseIcon" [attr.aria-hidden]="true" />
             </ng-container>
             <ng-container *ngIf="!active()">
-                <span *ngIf="pcAccordion.expandIcon" [class]="pcAccordion.expandIcon" [ngClass]="pcAccordion.iconClass" [attr.aria-hidden]="true"></span>
-                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [class]="pcAccordion.iconClass" [attr.aria-hidden]="true" />
+                <span *ngIf="pcAccordion.expandIcon" [class]="pcAccordion.expandIcon" [attr.aria-hidden]="true"></span>
+                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [attr.aria-hidden]="true" />
             </ng-container>
         }
     `,
@@ -131,9 +132,9 @@ export class AccordionPanel extends BaseComponent {
     providers: [AccordionStyle]
 })
 export class AccordionHeader extends BaseComponent {
-    pcAccordion = inject(forwardRef(() => Accordion));
+    pcAccordion = inject<Accordion>(forwardRef(() => Accordion));
 
-    pcAccordionPanel = inject(forwardRef(() => AccordionPanel));
+    pcAccordionPanel = inject<AccordionPanel>(forwardRef(() => AccordionPanel));
 
     id = computed(() => `${this.pcAccordion.id()}_accordionheader_${this.pcAccordionPanel.value()}`);
 
@@ -154,7 +155,7 @@ export class AccordionHeader extends BaseComponent {
      */
     @ContentChild('toggleicon') toggleicon: TemplateRef<AccordionToggleIconTemplateContext> | undefined;
 
-    @HostListener('click', ['$event']) onClick(event?: MouseEvent | KeyboardEvent) {
+    @HostListener('click', ['$event']) onClick(event: MouseEvent | KeyboardEvent) {
         if (this.disabled()) {
             return;
         }
