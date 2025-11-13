@@ -239,7 +239,7 @@ export const DsGovTheme = definePreset(lara, <Theme>{
                     }
                 }
             },
-            css: /*css*/ `
+            css: /*language=css*/ `
 .p-accordion {
     border-top: 1px solid var(--color-secondary-04);
 }
@@ -424,7 +424,7 @@ export const DsGovTheme = definePreset(lara, <Theme>{
                     }
                 }
             },
-            css: /*css*/ `
+            css: /*language=css*/ `
 .p-button {
     height: 40px;
     border-width: 0;
@@ -490,6 +490,110 @@ export const DsGovTheme = definePreset(lara, <Theme>{
 
 .p-button:not(:disabled):focus {
     outline: none;
+}
+`
+        },
+        checkbox: {
+            root: {
+                borderRadius: '4px',
+                width: 'var(--checkbox-size, 24px)',
+                height: 'var(--checkbox-size, 24px)',
+                background: 'var(--background-light)',
+                filledBackground: 'var(--background-light)',
+                checkedBackground: 'var(--background-light)',
+                checkedHoverBackground: 'var(--background-light)',
+                disabledBackground: 'var(--background-light)',
+                borderColor: 'var(--border-color)',
+                hoverBorderColor: 'var(--border-color)',
+                focusBorderColor: 'var(--focus)',
+                checkedBorderColor: 'var(--border-color)',
+                checkedHoverBorderColor: 'var(--border-color)',
+                checkedFocusBorderColor: 'var(--focus)',
+                checkedDisabledBorderColor: 'var(--border-color)',
+                invalidBorderColor: 'var(--danger)',
+                shadow: 'none',
+                focusRing: {
+                    width: '0',
+                    style: 'solid',
+                    color: 'transparent',
+                    offset: '0',
+                    shadow: '0 0 0 var(--surface-width-md) var(--focus)'
+                },
+                transitionDuration: 'var(--motion-duration-medium, 150ms)',
+                sm: {
+                    width: 'var(--spacing-scale-2xh, 20px)',
+                    height: 'var(--spacing-scale-2xh, 20px)'
+                },
+                lg: {
+                    width: 'calc(var(--checkbox-size, 24px) + var(--spacing-scale-base, 4px))',
+                    height: 'calc(var(--checkbox-size, 24px) + var(--spacing-scale-base, 4px))'
+                }
+            },
+            icon: {
+                size: 'calc(var(--icon-size-sm, 1rem) * 1.1783)',
+                color: 'var(--interactive-light)',
+                checkedColor: 'var(--selected)',
+                checkedHoverColor: 'var(--selected)',
+                disabledColor: 'rgba(var(--color-rgb), var(--disabled))',
+                sm: {
+                    size: 'calc(var(--icon-size-sm, 1rem) * 1.1783)'
+                },
+                lg: {
+                    size: 'calc(var(--icon-size-lg, 1.25rem) * 1.1783)'
+                }
+            },
+            css: /*language=css*/ `
+.p-checkbox .p-checkbox-box {
+    border-width: var(--surface-width-sm);
+    border-style: var(--border-style, solid);
+    background-image: none;
+}
+
+.p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+    background-image: var(--hover-effect, linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover))));
+}
+
+.p-checkbox:not(.p-disabled):has(.p-checkbox-input:active) .p-checkbox-box {
+    background-image: var(--pressed-effect, linear-gradient(rgba(var(--interactive-rgb), var(--pressed)), rgba(var(--interactive-rgb), var(--pressed))));
+}
+
+.p-checkbox:has(.p-checkbox-input:indeterminate) .p-checkbox-box {
+    background: var(--selected);
+    border-color: var(--selected);
+    background-image: none;
+}
+
+.p-checkbox:has(.p-checkbox-input:indeterminate) .p-checkbox-icon {
+    color: var(--background-light);
+}
+
+.p-checkbox.p-disabled .p-checkbox-box {
+    opacity: var(--disabled);
+    cursor: not-allowed;
+}
+
+.p-checkbox.p-disabled .p-checkbox-input {
+    cursor: not-allowed;
+}
+
+.p-checkbox + label {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: var(--spacing-scale-base);
+    min-height: var(--checkbox-size, 24px);
+    padding-inline-start: 0;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--spacing-scale-2xh, 20px);
+    margin-bottom: 0;
+}
+
+.p-checkbox + label:empty {
+    margin-inline-start: 0;
+}
+
+.p-checkbox.p-disabled + label {
+    cursor: not-allowed;
+    opacity: var(--disabled);
 }
 `
         },
