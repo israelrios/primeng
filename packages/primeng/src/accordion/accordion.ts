@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
     ChangeDetectionStrategy,
@@ -68,6 +67,7 @@ const ACCORDION_PANEL_INSTANCE = new InjectionToken<AccordionPanel>('ACCORDION_P
 const ACCORDION_HEADER_INSTANCE = new InjectionToken<AccordionHeader>('ACCORDION_HEADER_INSTANCE');
 const ACCORDION_CONTENT_INSTANCE = new InjectionToken<AccordionContent>('ACCORDION_CONTENT_INSTANCE');
 const ACCORDION_INSTANCE = new InjectionToken<Accordion>('ACCORDION_INSTANCE');
+const ACCORDION_DEFAULT_TRANSITION = '0.2s cubic-bezier(0.4, 0, 0.2, 1)';
 
 /**
  * AccordionPanel is a helper component for Accordion component.
@@ -122,7 +122,6 @@ export class AccordionPanel extends BaseComponent<AccordionPanelPassThrough> {
 
     _componentStyle = inject(AccordionStyle);
 }
-// noinspection AngularUnusedComponentImport
 /**
  * AccordionHeader is a helper component for Accordion component.
  * @group Components
@@ -142,7 +141,7 @@ export class AccordionPanel extends BaseComponent<AccordionPanelPassThrough> {
             </ng-container>
             <ng-container *ngIf="!active()">
                 <span *ngIf="pcAccordion.expandIcon" [class]="cn(cx('toggleicon'), pcAccordion.expandIcon)" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')"></span>
-                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')" />
+                <svg data-p-icon="chevron-down" *ngIf="!pcAccordion.expandIcon" [class]="cx('toggleicon')" [attr.aria-hidden]="true" [pBind]="ptm('toggleicon')" />
             </ng-container>
         }
     `,
@@ -321,11 +320,7 @@ export class AccordionHeader extends BaseComponent<AccordionHeaderPassThrough> {
     selector: 'p-accordion-content, p-accordioncontent',
     imports: [CommonModule, BindModule],
     standalone: true,
-    template: `<div
-        [class]="cx('content')"
-        [@content]="active() ? { value: 'visible', params: { transitionParams: pcAccordion.transitionOptions } } : { value: 'hidden', params: { transitionParams: pcAccordion.transitionOptions } }"
-        [pBind]="ptm('content', ptParams())"
-    >
+    template: `<div [class]="cx('content')" [pBind]="ptm('content', ptParams())">
         <ng-content />
     </div>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -335,34 +330,11 @@ export class AccordionHeader extends BaseComponent<AccordionHeaderPassThrough> {
         '[attr.id]': 'id()',
         '[attr.role]': '"region"',
         '[attr.data-p-active]': 'active()',
-        '[attr.aria-labelledby]': 'ariaLabelledby()'
+        '[attr.aria-labelledby]': 'ariaLabelledby()',
+        '[attr.aria-hidden]': '!active()',
+        '[attr.inert]': 'active() ? null : ""'
     },
     hostDirectives: [Bind],
-    animations: [
-        trigger('content', [
-            state(
-                'hidden',
-                style({
-                    height: '0',
-                    // To prevent memory leak, Angular issue. https://github.com/primefaces/primeng/issues/18546
-                    paddingBlockStart: '0',
-                    paddingBlockEnd: '0',
-                    borderBlockStartWidth: '0',
-                    borderBlockEndWidth: '0',
-                    //
-                    visibility: 'hidden'
-                })
-            ),
-            state(
-                'visible',
-                style({
-                    height: '*'
-                })
-            ),
-            transition('visible <=> hidden', [animate('{{transitionParams}}')]),
-            transition('void => *', animate(0))
-        ])
-    ],
     providers: [AccordionStyle, { provide: ACCORDION_CONTENT_INSTANCE, useExisting: AccordionContent }, { provide: PARENT_INSTANCE, useExisting: AccordionContent }]
 })
 export class AccordionContent extends BaseComponent<AccordionContentPassThrough> {
@@ -399,7 +371,8 @@ export class AccordionContent extends BaseComponent<AccordionContentPassThrough>
     imports: [CommonModule, SharedModule, BindModule],
     template: ` <ng-content /> `,
     host: {
-        '[class]': "cn(cx('root'), styleClass)"
+        '[class]': "cn(cx('root'), styleClass)",
+        '[style.--p-accordion-transition]': 'transitionOptions()'
     },
     hostDirectives: [Bind],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -449,11 +422,11 @@ export class Accordion extends BaseComponent<AccordionPassThrough> implements Bl
      */
     selectOnFocus = input(false, { transform: (v: any) => transformToBoolean(v) });
     /**
-     * Transition options of the animation.
+     * Animation duration and easing when toggling a panel.
+     * @defaultValue 0.2s cubic-bezier(0.4, 0, 0.2, 1)
      * @group Props
      */
-    @Input() transitionOptions: string = '400ms cubic-bezier(0.86, 0, 0.07, 1)';
-
+    transitionOptions = input<string>(ACCORDION_DEFAULT_TRANSITION);
     /**
      * Callback to invoke when an active tab is collapsed by clicking on the header.
      * @param {AccordionTabCloseEvent} event - Custom tab close event.

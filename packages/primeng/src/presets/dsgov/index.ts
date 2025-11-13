@@ -260,7 +260,7 @@ export const DsGovTheme = definePreset(lara, <Theme>{
     font-weight: var(--font-weight-semi-bold);
 }
 
-.p-accordionheader .p-icon {
+.p-accordionheader .p-accordionheader-toggle-icon {
     order: -1;
     margin-inline: var(--spacing-scale-baseh) var(--spacing-scale-2x);
 }

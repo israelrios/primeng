@@ -6,9 +6,21 @@ const style = /*css*/ `
     ${accordion_style}
 
     /*For PrimeNG*/
-    .p-accordionpanel:not(.p-accordionpanel-active) > .p-accordioncontent,
-    .p-accordioncontent-content.ng-animating {
+    .p-accordioncontent {
+        display: grid;
+        grid-template-rows: 0fr;
         overflow: hidden;
+        transition: grid-template-rows var(--p-accordion-transition);
+    }
+    .p-accordionpanel.p-accordionpanel-active > .p-accordioncontent {
+        grid-template-rows: 1fr;
+    }
+    .p-accordionpanel:not(.p-accordionpanel-active) > .p-accordioncontent > .p-accordioncontent-content {
+        padding-block: 0;
+    }
+    .p-accordioncontent-content {
+        overflow: hidden;
+        transition: padding var(--p-accordion-transition);
     }
 
     .p-accordionheader-toggle-icon.icon-start {
@@ -18,10 +30,6 @@ const style = /*css*/ `
     .p-accordionheader:has(.p-accordionheader-toggle-icon.icon-start) {
         justify-content: flex-start;
         gap: dt('accordion.header.padding');
-    }
-
-    .p-accordioncontent.ng-animating {
-        overflow: hidden;
     }
 
     .p-accordionheader.p-ripple {
