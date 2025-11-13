@@ -14,8 +14,7 @@ export class PlusIcon extends BaseIcon {
 
     viewBox = '0 0 384 512';
 
-    ngOnInit() {
-        super.ngOnInit();
+    onInit() {
         this.pathId = 'url(#' + uuid() + ')';
     }
 }

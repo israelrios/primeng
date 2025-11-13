@@ -19,8 +19,7 @@ export class TrashIcon extends BaseIcon {
 
     viewBox = '0 0 448 512';
 
-    ngOnInit() {
-        super.ngOnInit();
+    onInit() {
         this.pathId = 'url(#' + uuid() + ')';
     }
 }

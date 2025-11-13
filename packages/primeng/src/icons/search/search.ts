@@ -19,8 +19,7 @@ export class SearchIcon extends BaseIcon {
 
     viewBox = '0 0 512 512';
 
-    ngOnInit() {
-        super.ngOnInit();
+    onInit() {
         this.pathId = 'url(#' + uuid() + ')';
     }
 }
