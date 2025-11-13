@@ -27,6 +27,7 @@
 
 .ng-invalid.ng-dirty {
     &.p-inputtext,
+    &.p-textarea,
     &.p-inputwrapper:not(:has(.p-inputtext)),
     &.p-inputwrapper > .p-inputtext {
         border-width: var(--surface-width-md);
@@ -37,13 +38,15 @@
         --p-inputtext-invalid-border-color: var(--p-form-field-focus-border-color);
         --p-textarea-invalid-border-color: var(--p-form-field-focus-border-color);
     }
+
     &.p-focus:not(.p-disabled) {
         --p-select-invalid-border-color: var(--p-form-field-focus-border-color);
         --p-multiselect-invalid-border-color: var(--p-form-field-focus-border-color);
         --p-autocomplete-invalid-border-color: var(--p-form-field-focus-border-color);
         --p-inputchips-invalid-border-color: var(--p-form-field-focus-border-color);
     }
-    &:not(.p-disabled):has(:focus-visible){
+
+    &:not(.p-disabled):has(:focus-visible) {
         --p-checkbox-invalid-border-color: var(--p-form-field-focus-border-color);
         --p-radiobutton-invalid-border-color: var(--p-form-field-focus-border-color);
     }
@@ -61,8 +64,13 @@
     }
 }
 
+.p-component.p-textarea{
+    font-size: var(--font-size-scale-up-01);
+    font-weight: var(--font-weight-medium);
+}
+
 .p-inputwrapper:not(.p-disabled):hover:not(:has(.p-select-dropdown:hover, .p-inputtext, .p-multiselect-dropdown:hover, .p-component:hover)),
-.p-inputtext:enabled:hover {
+.p-inputtext:enabled:hover, .p-textarea:enabled:hover {
     background: linear-gradient(rgba(var(--color-light-rgb), var(--hover)), rgba(var(--color-light-rgb), var(--hover-light)));
 }
 
