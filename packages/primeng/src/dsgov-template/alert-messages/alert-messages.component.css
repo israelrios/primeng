@@ -2,13 +2,20 @@
     padding-left: 0;
 }
 
-.messages-container .content .title {
-    padding-right: 10px;
+.messages-container .content {
+    .title {
+        padding-right: 10px;
+    }
+
+    .message-body{
+        white-space: pre-line;
+    }
 }
 
 .messages-container {
     margin-top: 5px;
 }
+
 
 /* diminuir margin-bottom dsgov */
 .br-message {

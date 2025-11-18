@@ -1,4 +1,4 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { inject, Injectable, Signal, signal, untracked } from '@angular/core';
 
 import { timer } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -51,20 +51,9 @@ export class AlertMessageService {
     }
 
     private push(type: AlertMessageType, title: string, description?: string, details?: any[] | string[], options?: AlertMessageOptions): AlertMessage {
-        let message = this._messages().find((msg) => msg.type === type && msg.title === title && msg.description === description && msg.target === options?.target);
+        let message = untracked(() => this._messages().find((msg) => msg.type === type && msg.title === title && msg.description === description && msg.target === options?.target));
 
-        if (!message) {
-            message = {
-                type,
-                title,
-                description,
-                details,
-                count: 1,
-                time: Date.now(),
-                options: options || { dismissible: true, delay: 0 }
-            };
-            this._messages.update((value) => [...value, message!]); //NOSONAR
-        } else {
+        if (message) {
             message.count++;
             if (details) {
                 if (!message.details) {
@@ -72,6 +61,18 @@ export class AlertMessageService {
                 }
                 message.details.push(...details);
             }
+        } else {
+            message = {
+                type,
+                title,
+                description,
+                details,
+                count: 1,
+                time: Date.now(),
+                target: options?.target,
+                options: { dismissible: true, delay: 0, ...options }
+            };
+            this._messages.update((value) => [...value, message!]); //NOSONAR
         }
 
         if (message.options.delay && message.options.delay > 0) {

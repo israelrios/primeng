@@ -31,11 +31,7 @@ export class AlertMessagesComponent {
 
     private readonly alertMessageService = inject(AlertMessageService);
 
-    messages = computed(() =>
-        this.alertMessageService.messages().filter((message) => {
-            return this.onlyFor() === message.target;
-        })
-    );
+    messages = computed(() => this.alertMessageService.messages().filter((message) => this.onlyFor() === message.target));
 
     constructor() {
         effect(() => {
