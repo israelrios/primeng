@@ -1,12 +1,12 @@
 <ol class="crumb-list">
     <li class="crumb home">
-        <a [href]="homeUrl()" class="br-button circle" title="{{ homeName() }}">
+        <a [href]="homeUrl()" class="br-button circle" title="{{ homeName() }}" (click)="onHomeClick($event)">
             <span class="sr-only">{{ homeName() }}</span>
             <i class="fas fa-home" aria-hidden="true"></i>
         </a>
     </li>
 
-    @for (breadcrumb of breadcrumbs$ | async; track breadcrumb.route; let last = $last; let i = $index) {
+    @for (breadcrumb of breadcrumbs(); track breadcrumb.route; let last = $last; let i = $index) {
         @switch (showItem(i, last)) {
             @case ('LINK') {
                 <li class="crumb">

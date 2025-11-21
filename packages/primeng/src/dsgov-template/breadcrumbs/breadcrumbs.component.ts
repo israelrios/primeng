@@ -1,9 +1,9 @@
-import { Component, inject, Input, input, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Route, Router, RouterLink } from '@angular/router';
 import { Breadcrumb } from './breadcrumb.model';
 import { BreadcrumbsService } from './breadcrumbs.service';
-import { AsyncPipe } from '@angular/common';
 import { TEMPLATE_CONFIG } from '../template.config';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type ItemType = 'LINK' | 'REDUCE' | 'LAST' | 'NONE';
 
@@ -11,36 +11,43 @@ type ItemType = 'LINK' | 'REDUCE' | 'LAST' | 'NONE';
     selector: 's-breadcrumbs',
     templateUrl: './breadcrumbs.component.html',
     styleUrls: ['./breadcrumbs.component.scss'],
-    imports: [RouterLink, AsyncPipe],
-    host: { class: 'br-breadcrumb' }
+    imports: [RouterLink],
+    host: { class: 'br-breadcrumb' },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BreadcrumbsComponent implements OnInit {
+export class BreadcrumbsComponent {
     private readonly templateConfig = inject(TEMPLATE_CONFIG);
+    private readonly router = inject(Router);
 
     readonly homeUrl = input<string>(this.templateConfig.homeUrl);
     readonly homeName = input<string>('Início');
+    readonly maxItems = input<number>();
 
     private readonly breadcrumbsService = inject(BreadcrumbsService);
 
-    breadcrumbs$ = this.breadcrumbsService.breadcrumbs$;
+    readonly breadcrumbs = toSignal(this.breadcrumbsService.breadcrumbs$, { initialValue: [] as Breadcrumb[] });
 
-    showHidenItems = false;
+    readonly showHidenItems = signal(true);
+    readonly hidenIndex = computed(() => {
+        const max = this.maxItems();
+        const breadcrumbs = this.breadcrumbs();
 
-    private _breadcrumbs: Breadcrumb[] = [];
-    private _hidenIndex: number[] = [];
-    private _maxItems = 0;
+        if (!max || !breadcrumbs.length) {
+            return [];
+        }
 
-    get hidenIndex(): number[] {
-        return this._hidenIndex;
-    }
+        const half = max / 2;
+        const needExtra = max % 2 !== 0;
+        const needed = needExtra ? Math.floor(half) : half;
 
-    get maxItems(): number {
-        return this._maxItems;
-    }
+        return BreadcrumbsComponent.computeHidenIndexes(breadcrumbs.length, needed, needExtra);
+    });
 
-    @Input() set maxItems(maxItems: number) {
-        this._maxItems = maxItems;
-        this.syncHidenIndexes();
+    constructor() {
+        effect(() => {
+            const hidden = this.hidenIndex();
+            this.showHidenItems.set(hidden.length === 0);
+        });
     }
 
     static computeHidenIndexes(max: number, needed: number, neededExtra: boolean): number[] {
@@ -59,13 +66,16 @@ export class BreadcrumbsComponent implements OnInit {
     }
 
     showItem(index: number, last: boolean): ItemType {
+        const showHidenItems = this.showHidenItems();
+        const hidenIndex = this.hidenIndex();
+
         if (last) {
             return 'LAST';
         }
-        if (this.showHidenItems) {
+        if (showHidenItems) {
             return 'LINK';
         }
-        switch (this.hidenIndex.indexOf(index)) {
+        switch (hidenIndex.indexOf(index)) {
             case -1:
                 return 'LINK';
 
@@ -78,28 +88,92 @@ export class BreadcrumbsComponent implements OnInit {
     }
 
     showCompletePath() {
-        this.showHidenItems = true;
+        this.showHidenItems.set(true);
     }
 
-    private syncHidenIndexes() {
-        this._hidenIndex = [];
-        if (this.maxItems && this._breadcrumbs.length) {
-            let needExtra = false;
-            let needed = this.maxItems / 2;
-            if (this.maxItems % 2 !== 0) {
-                needed = Math.floor(needed);
-                needExtra = true;
+    onHomeClick(event: MouseEvent) {
+        // Let the browser handle new tab/window gestures
+        if (event.ctrlKey || event.shiftKey) {
+            return;
+        }
+
+        const url = this.homeUrl();
+
+        if (!url || this.isAbsoluteUrl(url) || !this.isValidRoute(url)) {
+            return;
+        }
+
+        event.preventDefault();
+        this.router.navigateByUrl(this.normalizeRelativeUrl(url)).then(() => {});
+    }
+
+    private isAbsoluteUrl(url: string): boolean {
+        return /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(url);
+    }
+
+    private normalizeRelativeUrl(url: string): string {
+        return url.startsWith('/') ? url : `/${url}`;
+    }
+
+    private isValidRoute(url: string): boolean {
+        const segments = this.normalizeRelativeUrl(url).split('/');
+
+        if (segments.length > 1 && segments.at(-1) === '') {
+            segments.pop();
+        }
+
+        if (segments.length > 1 && segments.at(0) === '') {
+            segments.shift();
+        }
+
+        return this.hasMatchingConfig(segments, this.router.config);
+    }
+
+    private hasMatchingConfig(segments: string[], routes: Route[]): boolean {
+        if (!routes.length || !segments.length) {
+            return false;
+        }
+
+        const [current, ...rest] = segments;
+
+        for (const route of routes) {
+            if (!this.doesRouteMatchSegment(route, current)) {
+                continue;
             }
 
-            this._hidenIndex = BreadcrumbsComponent.computeHidenIndexes(this._breadcrumbs.length, needed, needExtra);
+            if (rest.length === 0) {
+                return true;
+            }
+
+            if (route.children?.length && this.hasMatchingConfig(rest, route.children)) {
+                return true;
+            }
+
+            if (route.loadChildren) {
+                return true;
+            }
         }
-        this.showHidenItems = this._hidenIndex.length === 0;
+
+        return false;
     }
 
-    ngOnInit(): void {
-        this.breadcrumbs$.subscribe((breadcrumbs) => {
-            this._breadcrumbs = breadcrumbs;
-            this.syncHidenIndexes();
-        });
+    private doesRouteMatchSegment(route: Route, segment: string): boolean {
+        if (route.path === undefined) {
+            return false;
+        }
+
+        if (route.path === '**') {
+            return true;
+        }
+
+        if (route.path === '' || route.path === '/') {
+            return true;
+        }
+
+        if (route.path.startsWith(':')) {
+            return segment.length > 0;
+        }
+
+        return route.path === segment;
     }
 }
