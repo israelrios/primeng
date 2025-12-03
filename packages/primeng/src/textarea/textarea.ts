@@ -7,6 +7,7 @@ import { Fluid } from 'primeng/fluid';
 import { TextareaPassThrough } from 'primeng/types/textarea';
 import { Subscription } from 'rxjs';
 import { TextareaStyle } from './style/textareastyle';
+import { TextareaCharCountDirective } from './textarea-char-count-message';
 
 const TEXTAREA_INSTANCE = new InjectionToken<Textarea>('TEXTAREA_INSTANCE');
 
@@ -21,7 +22,7 @@ const TEXTAREA_INSTANCE = new InjectionToken<Textarea>('TEXTAREA_INSTANCE');
         '[class]': "cx('root')"
     },
     providers: [TextareaStyle, { provide: TEXTAREA_INSTANCE, useExisting: Textarea }, { provide: PARENT_INSTANCE, useExisting: Textarea }],
-    hostDirectives: [Bind]
+    hostDirectives: [Bind, { directive: TextareaCharCountDirective, inputs: ['showCharCount'] }]
 })
 export class Textarea extends BaseModelHolder<TextareaPassThrough> {
     bindDirectiveInstance = inject(Bind, { self: true });
@@ -133,7 +134,7 @@ export class Textarea extends BaseModelHolder<TextareaPassThrough> {
 }
 
 @NgModule({
-    imports: [Textarea],
-    exports: [Textarea]
+    imports: [Textarea, TextareaCharCountDirective],
+    exports: [Textarea, TextareaCharCountDirective]
 })
 export class TextareaModule {}
