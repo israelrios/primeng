@@ -1,9 +1,11 @@
 import lara from '@primeng/themes/lara';
 import { definePreset } from '@primeuix/styled';
 
-type Theme = typeof lara;
-
-export const DsGovTheme = definePreset(lara, <Theme>{
+/*
+  definePreset merges multiple preset objects and returns the merged result typed as the first argument’s type.
+  The DS Gov theme is the final merged preset from lara plus overrides.
+ */
+export const DsGovTheme = definePreset(lara, {
     primitive: {
         borderRadius: {
             md: 'var(--surface-rounder-sm)'
