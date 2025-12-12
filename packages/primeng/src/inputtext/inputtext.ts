@@ -56,9 +56,10 @@ export class InputText extends BaseModelHolder<InputTextPassThrough> {
 
     /**
      * Defines the size of the component.
+     * @defaultValue undefined
      * @group Props
      */
-    @Input('pSize') pSize: 'large' | 'small';
+    @Input('pSize') pSize: 'large' | 'small' | undefined;
     /**
      * Specifies the input variant of the component.
      * @defaultValue undefined
@@ -117,11 +118,13 @@ export class InputText extends BaseModelHolder<InputTextPassThrough> {
     }
 
     get dataP() {
+        const pSize = this.pSize;
+
         return this.cn({
             invalid: this.invalid(),
             fluid: this.hasFluid,
             filled: this.$variant() === 'filled',
-            [this.pSize]: this.pSize
+            ...(pSize ? { [pSize]: pSize } : {})
         });
     }
 }
