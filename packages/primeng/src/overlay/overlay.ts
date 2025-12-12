@@ -558,7 +558,6 @@ export class Overlay extends BaseComponent {
 
     onOverlayBeforeLeave(event: MotionEvent) {
         this.handleEvents('onBeforeHide', { overlay: this.overlayEl, target: this.targetEl, mode: this.overlayMode });
-        this.modal && this.overlayEl && addClass(this.overlayEl, 'p-overlay-mask-leave');
         this.handleEvents('onBeforeLeave', event);
     }
 
