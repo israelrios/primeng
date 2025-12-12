@@ -19,11 +19,13 @@ import {
     TemplateRef,
     ViewEncapsulation
 } from '@angular/core';
+import { MotionOptions } from '@primeuix/motion';
 import { findSingle, focus, getAttribute, uuid } from '@primeuix/utils';
 import { BlockableUI, SharedModule } from 'primeng/api';
 import { BaseComponent, PARENT_INSTANCE } from 'primeng/basecomponent';
 import { Bind, BindModule } from 'primeng/bind';
 import { ChevronDownIcon, ChevronUpIcon } from 'primeng/icons';
+import { MotionModule } from 'primeng/motion';
 import { Ripple } from 'primeng/ripple';
 import { AccordionContentPassThrough, AccordionHeaderPassThrough, AccordionPanelPassThrough, AccordionPassThrough } from 'primeng/types/accordion';
 import { transformToBoolean } from 'primeng/utils';
@@ -157,7 +159,8 @@ export class AccordionPanel extends BaseComponent<AccordionPanelPassThrough> {
         '[attr.tabindex]': 'disabled()?"-1":"0"',
         '[attr.data-p-active]': 'active()',
         '[attr.data-p-disabled]': 'disabled()',
-        '[style.user-select]': '"none"'
+        '[style.user-select]': '"none"',
+        '[attr.data-p]': 'dataP'
     },
     hostDirectives: [Ripple, Bind],
     providers: [AccordionStyle, { provide: ACCORDION_HEADER_INSTANCE, useExisting: AccordionHeader }, { provide: PARENT_INSTANCE, useExisting: AccordionHeader }]
@@ -213,7 +216,7 @@ export class AccordionHeader extends BaseComponent<AccordionHeaderPassThrough> {
         }
     }
 
-    @HostListener('focus', ['$event']) onFocus() {
+    @HostListener('focus') onFocus() {
         if (!this.disabled() && this.pcAccordion.selectOnFocus()) {
             this.changeActiveValue();
         }
@@ -314,15 +317,27 @@ export class AccordionHeader extends BaseComponent<AccordionHeaderPassThrough> {
         }
         event.preventDefault();
     }
+
+    get dataP() {
+        return this.cn({
+            active: this.active()
+        });
+    }
 }
 
 @Component({
     selector: 'p-accordion-content, p-accordioncontent',
-    imports: [CommonModule, BindModule],
+    imports: [CommonModule, BindModule, MotionModule],
     standalone: true,
-    template: `<div [class]="cx('content')" [pBind]="ptm('content', ptParams())">
-        <ng-content />
-    </div>`,
+    template: `
+        <p-motion [visible]="active()" name="p-collapsible" hideStrategy="visibility" [mountOnEnter]="false" [unmountOnLeave]="false" [options]="computedMotionOptions()">
+            <div [pBind]="ptm('contentWrapper', ptParams())" [class]="cx('contentWrapper')">
+                <div [pBind]="ptm('content', ptParams())" [class]="cx('content')">
+                    <ng-content />
+                </div>
+            </div>
+        </p-motion>
+    `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     host: {
@@ -359,6 +374,13 @@ export class AccordionContent extends BaseComponent<AccordionContentPassThrough>
     _componentStyle = inject(AccordionStyle);
 
     ptParams = computed(() => ({ context: this.active() }));
+
+    computedMotionOptions = computed<MotionOptions>(() => {
+        return {
+            ...this.ptm('motion', this.ptParams()),
+            ...this.pcAccordion.computedMotionOptions()
+        };
+    });
 }
 
 /**
@@ -369,10 +391,9 @@ export class AccordionContent extends BaseComponent<AccordionContentPassThrough>
     selector: 'p-accordion',
     standalone: true,
     imports: [CommonModule, SharedModule, BindModule],
-    template: ` <ng-content /> `,
+    template: ` <ng-content />`,
     host: {
-        '[class]': "cn(cx('root'), styleClass)",
-        '[style.--p-accordion-transition]': 'transitionOptions()'
+        '[class]': "cn(cx('root'), styleClass)"
     },
     hostDirectives: [Bind],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -425,8 +446,22 @@ export class Accordion extends BaseComponent<AccordionPassThrough> implements Bl
      * Animation duration and easing when toggling a panel.
      * @defaultValue 0.2s cubic-bezier(0.4, 0, 0.2, 1)
      * @group Props
+     * @deprecated since v21.0.0, use `motionOptions` instead.
      */
     transitionOptions = input<string>(ACCORDION_DEFAULT_TRANSITION);
+    /**
+     * The motion options.
+     * @group Props
+     */
+    motionOptions = input<MotionOptions | undefined>(undefined);
+
+    computedMotionOptions = computed<MotionOptions>(() => {
+        return {
+            ...this.ptm('motion'),
+            ...this.motionOptions()
+        };
+    });
+
     /**
      * Callback to invoke when an active tab is collapsed by clicking on the header.
      * @param {AccordionTabCloseEvent} event - Custom tab close event.

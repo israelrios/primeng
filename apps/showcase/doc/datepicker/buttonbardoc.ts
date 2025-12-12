@@ -1,13 +1,13 @@
+import { AppCode } from '@/components/doc/app.code';
+import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
 import { Code } from '@/domain/code';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
-import { AppCode } from '@/components/doc/app.code';
-import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
-    selector: 'datepicker-buttonbar-demo',
+    selector: 'date-picker-buttonbar-demo',
     standalone: true,
     imports: [FormsModule, DatePickerModule, ButtonModule, AppCode, AppDocSectionText],
     template: `
@@ -24,14 +24,14 @@ import { AppDocSectionText } from '@/components/doc/app.docsectiontext';
                             <p-button size="small" label="Flexible" severity="secondary" />
                         </div>
                         <div class="flex gap-2">
-                            <p-button size="small" label="Today" (click)="todayCallback()" variant="outlined" />
-                            <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback()" />
+                            <p-button size="small" label="Today" (click)="todayCallback($event)" variant="outlined" />
+                            <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback($event)" />
                         </div>
                     </div>
                 </ng-template>
             </p-datepicker>
         </div>
-        <app-code [code]="code" selector="datepicker-buttonbar-demo"></app-code>
+        <app-code [code]="code" selector="date-picker-buttonbar-demo"></app-code>
     `
 })
 export class ButtonBarDoc {
@@ -49,8 +49,8 @@ export class ButtonBarDoc {
                 <p-button size="small" label="Flexible" severity="secondary" />
             </div>
             <div class="flex gap-2">
-                <p-button size="small" label="Today" (click)="todayCallback()" variant="outlined" />
-                <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback()" />
+                <p-button size="small" label="Today" (click)="todayCallback($event)" variant="outlined" />
+                <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback($event)" />
             </div>
         </div>
     </ng-template>
@@ -66,8 +66,8 @@ export class ButtonBarDoc {
                     <p-button size="small" label="Flexible" severity="secondary" />
                 </div>
                 <div class="flex gap-2">
-                    <p-button size="small" label="Today" (click)="todayCallback()" variant="outlined" />
-                    <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback()" />
+                    <p-button size="small" label="Today" (click)="todayCallback($event)" variant="outlined" />
+                    <p-button size="small" icon="pi pi-times" severity="danger" variant="text" (click)="clearCallback($event)" />
                 </div>
             </div>
         </ng-template>
@@ -80,8 +80,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-    selector: 'datepicker-buttonbar-demo',
-    templateUrl: './datepicker-buttonbar-demo.html',
+    selector: 'date-picker-buttonbar-demo',
+    templateUrl: './date-picker-buttonbar-demo.html',
     standalone: true,
     imports: [FormsModule, DatePickerModule, ButtonModule]
 })
