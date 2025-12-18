@@ -267,7 +267,7 @@ export const DsGovTheme = definePreset(lara, {
     margin-inline: var(--spacing-scale-baseh) var(--spacing-scale-2x);
 }
 
-.p-accordionpanel.p-accordionpanel-active > .p-accordioncontent > .p-accordioncontent-content {
+.p-accordioncontent-content.is-active {
     border-bottom: 1px solid var(--color-secondary-04);
 }
 

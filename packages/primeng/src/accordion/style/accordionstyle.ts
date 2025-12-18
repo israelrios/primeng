@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { style as accordion_style } from '@primeuix/styles/accordion';
 import { BaseStyle } from 'primeng/base';
+import { AccordionContent } from '../accordion';
 
 const style = /*css*/ `
 ${accordion_style}
 
 /* For PrimeNG */
+.p-accordioncontent, .p-accordioncontent-content {
+    overflow: hidden;
+}
+
 .p-accordionheader-toggle-icon.icon-start {
     order: -1;
 }
@@ -39,7 +44,7 @@ const classes = {
     toggleicon: 'p-accordionheader-toggle-icon',
     contentContainer: 'p-accordioncontent',
     contentWrapper: 'p-accordioncontent-wrapper',
-    content: 'p-accordioncontent-content'
+    content: ({ instance }: { instance: AccordionContent }) => ['p-accordioncontent-content', { 'is-active': instance.active() }]
 };
 
 @Injectable()
