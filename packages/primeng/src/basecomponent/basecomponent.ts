@@ -1,7 +1,7 @@
 import { DOCUMENT, isPlatformServer } from '@angular/common';
 import { ChangeDetectorRef, computed, Directive, effect, ElementRef, inject, InjectionToken, Injector, input, PLATFORM_ID, Renderer2, signal, SimpleChanges } from '@angular/core';
 import { Theme, ThemeService } from '@primeuix/styled';
-import { cn, getKeyValue, isArray, isFunction, isNotEmpty, isString, mergeProps, resolve, toFlatCase, uuid } from '@primeuix/utils';
+import { cn, getKeyValue, Handler, isArray, isFunction, isNotEmpty, isString, mergeProps, resolve, toFlatCase, uuid } from '@primeuix/utils';
 import type { Lifecycle, PassThroughOptions } from 'primeng/api';
 import { Base, BaseStyle } from 'primeng/base';
 import { PrimeNG } from 'primeng/config';
@@ -41,6 +41,8 @@ export class BaseComponent<PT = any> implements Lifecycle {
     protected readonly cn = cn;
 
     private _themeScopedListener: () => void;
+
+    private readonly themeListenerCallbacks = new Map<Handler, Handler>();
 
     /******************** Inputs ********************/
 
@@ -164,7 +166,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
         // watch _dt_ changes
         effect((onCleanup) => {
             if (this.document && !isPlatformServer(this.platformId)) {
-                ThemeService.off('theme:change', this._themeScopedListener);
+                this._themeChangeListenerOff(this._themeScopedListener);
 
                 if (this.dt()) {
                     this._loadScopedThemeStyles(this.dt());
@@ -176,14 +178,14 @@ export class BaseComponent<PT = any> implements Lifecycle {
             }
 
             onCleanup(() => {
-                ThemeService.off('theme:change', this._themeScopedListener);
+                this._themeChangeListenerOff(this._themeScopedListener);
             });
         });
 
         // watch _unstyled_ changes
         effect((onCleanup) => {
             if (this.document && !isPlatformServer(this.platformId)) {
-                ThemeService.off('theme:change', this._loadCoreStyles);
+                this._themeChangeListenerOff(this._loadCoreStyles);
 
                 if (!this.$unstyled()) {
                     this._loadCoreStyles();
@@ -192,7 +194,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
             }
 
             onCleanup(() => {
-                ThemeService.off('theme:change', this._loadCoreStyles);
+                this._themeChangeListenerOff(this._loadCoreStyles);
             });
         });
 
@@ -331,7 +333,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
 
     private _loadStyles() {
         this._load();
-        this._themeChangeListener(() => this._load());
+        this._themeChangeListener(this._load);
     }
 
     private _loadGlobalStyles() {
@@ -396,13 +398,27 @@ export class BaseComponent<PT = any> implements Lifecycle {
 
     private _themeChangeListener(callback = () => {}) {
         Base.clearLoadedStyleNames();
-        ThemeService.on('theme:change', callback.bind(this));
+        const handler = callback.bind(this);
+        this.themeListenerCallbacks.set(callback, handler);
+        ThemeService.on('theme:change', handler);
     }
 
     private _removeThemeListeners() {
-        ThemeService.off('theme:change', this._loadCoreStyles);
-        ThemeService.off('theme:change', this._load);
-        ThemeService.off('theme:change', this._themeScopedListener);
+        this._themeChangeListenerOff(this._loadCoreStyles);
+        this._themeChangeListenerOff(this._load);
+        this._themeChangeListenerOff(this._themeScopedListener);
+    }
+
+    private _themeChangeListenerOff(handler: Handler | undefined) {
+        if (!handler) {
+            return;
+        }
+        ThemeService.off('theme:change', handler);
+        const other = this.themeListenerCallbacks.get(handler);
+        if (other) {
+            ThemeService.off('theme:change', other);
+            this.themeListenerCallbacks.delete(handler);
+        }
     }
 
     /********** Passthrough **********/

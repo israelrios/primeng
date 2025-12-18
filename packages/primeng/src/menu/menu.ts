@@ -883,9 +883,7 @@ export class Menu extends BaseComponent<MenuPassThrough> {
             this.onOverlayHide();
         }
 
-        if (!this.popup) {
-            this.unbindDocumentClickListener();
-        }
+        this.unbindDocumentClickListener();
     }
 
     hasSubMenu(): boolean {
