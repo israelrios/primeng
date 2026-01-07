@@ -652,8 +652,10 @@ export class Overlay extends BaseComponent {
     bindMutationObserver() {
         // Only necessary when overlay is appended to the body
         if (this.mutationObserver === null && this.$appendTo() === 'body') {
-            this.mutationObserver = new MutationObserver(() => this.checkTargetMovement());
-            this.mutationObserver.observe(document.body, { childList: true, attributes: true, subtree: true });
+            this.zone.runOutsideAngular(() => {
+                this.mutationObserver = new MutationObserver(() => this.checkTargetMovement());
+                this.mutationObserver.observe(document.body, { childList: true, attributes: true, subtree: true });
+            });
         }
     }
 
