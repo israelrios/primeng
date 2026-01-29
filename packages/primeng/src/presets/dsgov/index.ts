@@ -669,6 +669,13 @@ export const DsGovTheme = definePreset(lara, {
                 width: '32px'
             }
         },
+        datepicker: {
+            css: /*language=css*/ `
+.p-datepicker-dropdown{
+    height: 40px;
+}
+            `
+        },
         tabs: {
             tablist: {
                 borderWidth: '0 0 1px 0',
