@@ -24,6 +24,8 @@ const INPUTTEXT_INSTANCE = new InjectionToken<InputText>('INPUTTEXT_INSTANCE');
     hostDirectives: [Bind]
 })
 export class InputText extends BaseModelHolder<InputTextPassThrough> {
+    componentName = 'InputText';
+
     @Input() hostName: any = '';
 
     /**
@@ -124,7 +126,7 @@ export class InputText extends BaseModelHolder<InputTextPassThrough> {
             invalid: this.invalid(),
             fluid: this.hasFluid,
             filled: this.$variant() === 'filled',
-            ...(pSize ? { [pSize]: pSize } : {})
+            [this.pSize as string]: this.pSize
         });
     }
 }

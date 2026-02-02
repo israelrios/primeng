@@ -6,7 +6,7 @@ ToggleSwitch is used to select a boolean value.
 
 Screen Reader InputSwitch component uses a hidden native checkbox element with switch role internally that is only visible to screen readers. Value to describe the component can either be provided via label tag combined with inputId prop or using ariaLabelledBy , ariaLabel props.
 
-```html
+```typescript
 <label for="switch1">Remember Me</label>
 <p-toggleswitch inputId="switch1" />
 
@@ -20,141 +20,134 @@ Screen Reader InputSwitch component uses a hidden native checkbox element with s
 
 Two-way value binding is defined using ngModel .
 
-```html
-<p-toggleswitch [(ngModel)]="checked" />
+```typescript
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+
+@Component({
+    template: `
+        <div class="card flex justify-center">
+            <p-toggleswitch [(ngModel)]="checked" />
+        </div>
+    `,
+    standalone: true,
+    imports: [ToggleSwitchModule, FormsModule]
+})
+export class ToggleswitchBasicDemo {
+    checked: boolean = false;
+}
 ```
 
 ## Disabled
 
 When disabled is present, the element cannot be edited and focused.
 
-```html
-<p-toggleswitch [(ngModel)]="checked" [disabled]="true" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component } from '@angular/core';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-    selector: 'toggle-switch-disabled-demo',
-    templateUrl: './toggle-switch-disabled-demo.html',
+    template: `
+        <div class="card flex justify-center">
+            <p-toggleswitch [(ngModel)]="checked" [disabled]="true" />
+        </div>
+    `,
     standalone: true,
-    imports: [FormsModule, ToggleSwitch]
+    imports: [ToggleSwitchModule, FormsModule]
 })
-export class ToggleSwitchDisabledDemo {
+export class ToggleswitchDisabledDemo {
     checked: boolean = false;
 }
 ```
-</details>
 
 ## Invalid
 
 The invalid state is applied using the ⁠invalid property to indicate failed validation, which can be integrated with Angular Forms.
 
-```html
-<p-toggleswitch [(ngModel)]="checked" [invalid]="!checked" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component } from '@angular/core';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-    selector: 'toggle-switch-invalid-demo',
-    templateUrl: './toggle-switch-invalid-demo.html',
+    template: `
+        <div class="card flex justify-center">
+            <p-toggleswitch [(ngModel)]="checked" [invalid]="!checked" />
+        </div>
+    `,
     standalone: true,
-    imports: [FormsModule, ToggleSwitch]
+    imports: [ToggleSwitchModule, FormsModule]
 })
-export class ToggleSwitchInvalidDemo {
+export class ToggleswitchInvalidDemo {
     checked: boolean = false;
 }
 ```
-</details>
 
 ## Preselection
 
 Enabling ngModel property displays the component as active initially.
 
-```html
-<p-toggleswitch [(ngModel)]="checked" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component } from '@angular/core';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-    selector: 'toggle-switch-preselection-demo',
-    templateUrl: './toggle-switch-preselection-demo.html',
+    template: `
+        <div class="card flex justify-center">
+            <p-toggleswitch [(ngModel)]="checked" />
+        </div>
+    `,
     standalone: true,
-    imports: [FormsModule, ToggleSwitch]
+    imports: [ToggleSwitchModule, FormsModule]
 })
-export class ToggleSwitchPreselectionDemo {
+export class ToggleswitchPreselectionDemo {
     checked: boolean = true;
 }
 ```
-</details>
 
-## reactiveformsdoc
+## reactiveforms-doc
 
 ToggleSwitch can also be used with reactive forms. In this case, the formControlName property is used to bind the component to a form control.
 
-```html
-<div class="card flex justify-center">
-    <form [formGroup]="exampleForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-48">
-        <div class="flex flex-col items-center gap-2">
-            <p-toggleswitch name="activation" formControlName="activation" [invalid]="isInvalid('activation')" />
-            @if (isInvalid('activation')) {
-                <p-message severity="error" size="small" variant="simple">Activation is required.</p-message>
-            }
-        </div>
-        <button pButton severity="secondary" type="submit"><span pButtonLabel>Submit</span></button>
-    </form>
-</div>
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
 
 @Component({
-    selector: 'toggle-switch-reactive-forms-demo',
-    templateUrl: './toggle-switch-reactive-forms-demo.html',
+    template: `
+        <p-toast />
+        <div class="card flex justify-center">
+            <form [formGroup]="exampleForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-48">
+                <div class="flex flex-col items-center gap-2">
+                    <p-toggleswitch name="activation" formControlName="activation" [invalid]="isInvalid('activation')" />
+                    @if (isInvalid('activation')) {
+                        <p-message severity="error" size="small" variant="simple">Activation is required.</p-message>
+                    }
+                </div>
+                <button pButton severity="secondary" type="submit"><span pButtonLabel>Submit</span></button>
+            </form>
+        </div>
+    `,
     standalone: true,
-    imports: [ReactiveFormsModule, ToggleSwitchModule, MessageModule, ToastModule, ButtonModule]
+    imports: [MessageModule, ToastModule, ToggleSwitchModule, ButtonModule, ReactiveFormsModule]
 })
-export class ToggleSwitchReactiveFormsDemo {
+export class ToggleswitchReactiveformsDemo {
     messageService = inject(MessageService);
-
     exampleForm: FormGroup | undefined;
-
     formSubmitted: boolean = false;
 
-    constructor(private fb: FormBuilder) {
+    constructor() {
         this.exampleForm = this.fb.group({
-            activation: ['', Validators.required]
-        });
+                    activation: ['', Validators.required]
+                });
     }
 
     onSubmit() {
@@ -172,75 +165,65 @@ export class ToggleSwitchReactiveFormsDemo {
     }
 }
 ```
-</details>
 
 ## Template
 
 The handle template is available to display custom content.
 
-```html
-<p-toggleswitch [(ngModel)]="checked">
-    <ng-template #handle let-checked="checked">
-        <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
-    </ng-template>
-</p-toggleswitch>
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component } from '@angular/core';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-    selector: 'toggle-switch-template-demo',
-    templateUrl: './toggle-switch-template-demo.html',
+    template: `
+        <div class="card flex justify-center gap-4">
+            <p-toggleswitch [(ngModel)]="checked">
+                <ng-template #handle let-checked="checked">
+                    <i [ngClass]="['!text-xs', 'pi', checked ? 'pi-check' : 'pi-times']"></i>
+                </ng-template>
+            </p-toggleswitch>
+        </div>
+    `,
     standalone: true,
-    imports: [FormsModule, ToggleSwitch]
+    imports: [ToggleSwitchModule, FormsModule]
 })
-export class ToggleSwitchTemplateDemo {
+export class ToggleswitchTemplateDemo {
     checked: boolean = false;
 }
 ```
-</details>
 
-## templatedrivenformsdoc
-
-```html
-<form #exampleForm="ngForm" (ngSubmit)="onSubmit(exampleForm)" class="flex flex-col gap-4 w-48">
-    <div class="flex flex-col items-center gap-2">
-        <p-toggleswitch #model="ngModel" [(ngModel)]="checked" name="activation" [invalid]="model.invalid && exampleForm.submitted" required />
-        @if (model.invalid && exampleForm.submitted) {
-            <p-message severity="error" size="small" variant="simple">Activation is required.</p-message>
-        }
-    </div>
-    <button pButton severity="secondary" type="submit"><span pButtonLabel>Submit</span></button>
-</form>
-```
-
-<details>
-<summary>TypeScript Example</summary>
+## templatedrivenforms-doc
 
 ```typescript
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
 
 @Component({
-    selector: 'toggle-switch-template-driven-forms-demo',
-    templateUrl: './toggle-switch-template-driven-forms-demo.html',
+    template: `
+        <p-toast />
+        <div class="card flex justify-center">
+            <form #exampleForm="ngForm" (ngSubmit)="onSubmit(exampleForm)" class="flex flex-col gap-4 w-48">
+                <div class="flex flex-col items-center gap-2">
+                    <p-toggleswitch #model="ngModel" [(ngModel)]="checked" name="activation" [invalid]="model.invalid && exampleForm.submitted" required />
+                    @if (model.invalid && exampleForm.submitted) {
+                        <p-message severity="error" size="small" variant="simple">Activation is required.</p-message>
+                    }
+                </div>
+                <button pButton severity="secondary" type="submit"><span pButtonLabel>Submit</span></button>
+            </form>
+        </div>
+    `,
     standalone: true,
-    imports: [FormsModule, ToggleSwitchModule, MessageModule, ToastModule, ButtonModule]
+    imports: [MessageModule, ToastModule, ToggleSwitchModule, ButtonModule, FormsModule]
 })
-export class TemplateDrivenFormsDemo {
+export class ToggleswitchTemplatedrivenformsDemo {
     messageService = inject(MessageService);
-
     checked: boolean;
 
     onSubmit(form: any) {
@@ -251,7 +234,6 @@ export class TemplateDrivenFormsDemo {
     }
 }
 ```
-</details>
 
 ## Pass Through Options
 

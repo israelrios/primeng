@@ -51,6 +51,8 @@ const CARD_INSTANCE = new InjectionToken<Card>('CARD_INSTANCE');
     hostDirectives: [Bind]
 })
 export class Card extends BaseComponent<CardPassThrough> implements BlockableUI {
+    componentName = 'Card';
+
     $pcCard: Card | undefined = inject(CARD_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
 
     bindDirectiveInstance = inject(Bind, { self: true });
@@ -145,7 +147,7 @@ export class Card extends BaseComponent<CardPassThrough> implements BlockableUI 
     _style = signal<{ [klass: string]: any } | null | undefined>(null);
 
     getBlockableElement(): HTMLElement {
-        return this.el.nativeElement.children[0];
+        return this.el.nativeElement;
     }
 
     @ContentChildren(PrimeTemplate) templates: QueryList<PrimeTemplate> | undefined;

@@ -1,6 +1,6 @@
 {
-    "id": 93,
-    "content": "PrimeNG v21.0.0 has landed 🎉",
+    "id": 97,
+    "content": "Introducing PrimeOne UI Kit v4 with Figma Native Variables",
     "linkText": "Learn More",
-    "routerLink": "/migration/v21"
+    "routerLink": "/uikit"
 }

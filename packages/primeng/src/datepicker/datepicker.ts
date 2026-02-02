@@ -78,6 +78,7 @@ const DATEPICKER_INSTANCE = new InjectionToken<DatePicker>('DATEPICKER_INSTANCE'
             <input
                 #inputfield
                 pInputText
+                data-p-maskable
                 [pSize]="size()"
                 [attr.size]="inputSize()"
                 type="text"
@@ -537,6 +538,8 @@ const DATEPICKER_INSTANCE = new InjectionToken<DatePicker>('DATEPICKER_INSTANCE'
     }
 })
 export class DatePicker extends BaseInput<DatePickerPassThrough> {
+    componentName = 'DatePicker';
+
     bindDirectiveInstance = inject(Bind, { self: true });
 
     $pcDatePicker: DatePicker | undefined = inject(DATEPICKER_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
@@ -3018,6 +3021,7 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
 
     onUserInput(event: KeyboardEvent | any) {
         // IE 11 Workaround for input placeholder : https://github.com/primefaces/primeng/issues/2026
+
         if (!this.isKeydown) {
             return;
         }

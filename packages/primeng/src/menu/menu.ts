@@ -214,6 +214,7 @@ export class MenuItemContent extends BaseComponent {
                             <li [class]="cx('separator')" [pBind]="ptm('separator')" *ngIf="item.separator && (item.visible !== false || submenu.visible !== false)" role="separator" [attr.data-pc-section]="'separator'"></li>
                             <li
                                 [class]="cn(cx('item', { item, id: menuitemId(item, id, i, j) }), item?.styleClass)"
+                                [pBind]="ptm('item')"
                                 *ngIf="!item.separator && item.visible !== false && (item.visible !== undefined || submenu.visible !== false)"
                                 [pMenuItemContent]="item"
                                 [itemTemplate]="itemTemplate ?? _itemTemplate"
@@ -226,7 +227,6 @@ export class MenuItemContent extends BaseComponent {
                                 [pTooltipUnstyled]="unstyled()"
                                 [unstyled]="unstyled()"
                                 role="menuitem"
-                                [attr.data-pc-section]="'menuitem'"
                                 [attr.aria-label]="label(item.label)"
                                 [attr.data-p-focused]="isItemFocused(menuitemId(item, id, i, j))"
                                 [attr.data-p-disabled]="disabled(item.disabled)"
@@ -239,6 +239,7 @@ export class MenuItemContent extends BaseComponent {
                         <li [class]="cx('separator')" [pBind]="ptm('separator')" *ngIf="item.separator && item.visible !== false" role="separator" [attr.data-pc-section]="'separator'"></li>
                         <li
                             [class]="cn(cx('item', { item, id: menuitemId(item, id, i) }), item?.styleClass)"
+                            [pBind]="ptm('item')"
                             *ngIf="!item.separator && item.visible !== false"
                             [pMenuItemContent]="item"
                             [itemTemplate]="itemTemplate ?? _itemTemplate"
@@ -251,7 +252,6 @@ export class MenuItemContent extends BaseComponent {
                             [unstyled]="unstyled()"
                             [pTooltipUnstyled]="unstyled()"
                             role="menuitem"
-                            [attr.data-pc-section]="'menuitem'"
                             [attr.aria-label]="label(item.label)"
                             [attr.data-p-focused]="isItemFocused(menuitemId(item, id, i))"
                             [attr.data-p-disabled]="disabled(item.disabled)"
@@ -273,6 +273,8 @@ export class MenuItemContent extends BaseComponent {
     hostDirectives: [Bind]
 })
 export class Menu extends BaseComponent<MenuPassThrough> {
+    componentName = 'Menu';
+
     /**
      * An array of menuitems.
      * @group Props
@@ -711,7 +713,7 @@ export class Menu extends BaseComponent<MenuPassThrough> {
     }
 
     onEndKey(event) {
-        this.changeFocusedOptionIndex(find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="menuitem"][data-p-disabled="false"]').length - 1);
+        this.changeFocusedOptionIndex(find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="item"][data-p-disabled="false"]').length - 1);
         event.preventDefault();
     }
 
@@ -730,21 +732,21 @@ export class Menu extends BaseComponent<MenuPassThrough> {
     }
 
     findNextOptionIndex(index) {
-        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="menuitem"][data-p-disabled="false"]');
+        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="item"][data-p-disabled="false"]');
         const matchedOptionIndex = [...links].findIndex((link) => link.id === index);
 
         return matchedOptionIndex > -1 ? matchedOptionIndex + 1 : 0;
     }
 
     findPrevOptionIndex(index) {
-        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="menuitem"][data-p-disabled="false"]');
+        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="item"][data-p-disabled="false"]');
         const matchedOptionIndex = [...links].findIndex((link) => link.id === index);
 
         return matchedOptionIndex > -1 ? matchedOptionIndex - 1 : 0;
     }
 
     changeFocusedOptionIndex(index) {
-        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="menuitem"][data-p-disabled="false"]');
+        const links = find(this.containerViewChild()?.nativeElement, 'li[data-pc-section="item"][data-p-disabled="false"]');
         if (links.length > 0) {
             let order = index >= links.length ? links.length - 1 : index < 0 ? 0 : index;
             order > -1 && this.focusedOptionIndex.set(links[order].getAttribute('id'));

@@ -10,242 +10,22 @@ Screen Reader Accordion header elements have a button role, an aria-label define
 
 PanelMenu requires a collection of menuitems as its model .
 
-```html
-<p-panelmenu [model]="items" class="w-full md:w-20rem" />
-```
-
-## Command
-
-The command property defines the callback to run when an item is activated by click or a key event.
-
-```html
-<p-toast />
-<p-panelmenu [model]="items" class="w-full md:w-80" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component, OnInit } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
-import { PanelMenu } from 'primeng/panelmenu';
-import { ToastModule } from 'primeng/toast';
-
-@Component({
-    selector: 'panel-menu-command-demo',
-    templateUrl: './panel-menu-command-demo.html',
-    standalone: true,
-    imports: [PanelMenu, ToastModule],
-    providers: [MessageService]
-})
-export class PanelMenuCommandDemo implements OnInit {
-    items: MenuItem[];
-
-    constructor(private messageService: MessageService) {}
-
-    ngOnInit() {
-        this.items = [
-            {
-                label: 'Files',
-                icon: 'pi pi-file',
-                items: [
-                    {
-                        label: 'New',
-                        icon: 'pi pi-plus',
-                        command: () => {
-                            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File created', life: 3000 });
-                        }
-                    },
-                    {
-                        label: 'Search',
-                        icon: 'pi pi-search',
-                        command: () => {
-                            this.messageService.add({ severity: 'warn', summary: 'Search Results', detail: 'No results found', life: 3000 });
-                        }
-                    },
-                    {
-                        label: 'Print',
-                        icon: 'pi pi-print',
-                        command: () => {
-                            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No printer connected', life: 3000 });
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'Sync',
-                icon: 'pi pi-cloud',
-                items: [
-                    {
-                        label: 'Import',
-                        icon: 'pi pi-cloud-download',
-                        command: () => {
-                            this.messageService.add({ severity: 'info', summary: 'Downloads', detail: 'Downloaded from cloud', life: 3000 });
-                        }
-                    },
-                    {
-                        label: 'Export',
-                        icon: 'pi pi-cloud-upload',
-                        command: () => {
-                            this.messageService.add({ severity: 'info', summary: 'Shared', detail: 'Exported to cloud', life: 3000 });
-                        }
-                    }
-                ]
-            },
-            {
-                label: 'Sign Out',
-                icon: 'pi pi-sign-out',
-                command: () => {
-                    this.messageService.add({ severity: 'info', summary: 'Signed out', detail: 'User logged out', life: 3000 });
-                }
-            }
-        ];
-    }
-}
-```
-</details>
-
-## Controlled
-
-Menu items can be controlled programmatically.
-
-```html
-<p-button label="Toggle All" [text]="true" (onClick)="toggleAll()" />
-<p-panelmenu [model]="items" class="w-full md:w-80" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
-```typescript
-import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { PanelMenu } from 'primeng/panelmenu';
-import { ButtonModule } from 'primeng/button';
-
-@Component({
-    selector: 'panel-menu-controlled-demo',
-    templateUrl: './panel-menu-controlled-demo.html',
-    standalone: true,
-    imports: [PanelMenu, ButtonModule]
-})
-export class PanelMenuControlledDemo implements OnInit {
-    items: MenuItem[];
-
-    ngOnInit() {
-        this.items = [
-            {
-                key: '0',
-                label: 'Users',
-                icon: 'pi pi-users',
-                items: [
-                    {
-                        key: '0_1',
-                        label: 'New',
-                        items: [
-                            {
-                                key: '0_1_0',
-                                label: 'Member'
-                            },
-                            {
-                                key: '0_1_1',
-                                label: 'Group'
-                            }
-                        ]
-                    },
-                    {
-                        key: '0_2',
-                        label: 'Search'
-                    }
-                ]
-            },
-            {
-                key: '1',
-                label: 'Tasks',
-                icon: 'pi pi-server',
-                items: [
-                    {
-                        key: '1_0',
-                        label: 'Add New'
-                    },
-                    {
-                        key: '1_1',
-                        label: 'Pending'
-                    },
-                    {
-                        key: '1_2',
-                        label: 'Overdue'
-                    }
-                ]
-            },
-            {
-                key: '2',
-                label: 'Calendar',
-                icon: 'pi pi-calendar',
-                items: [
-                    {
-                        key: '2_0',
-                        label: 'New Event'
-                    },
-                    {
-                        key: '2_1',
-                        label: 'Today'
-                    },
-                    {
-                        key: '2_2',
-                        label: 'This Week'
-                    }
-                ]
-            }
-        ];
-    }
-
-    toggleAll() {
-        const expanded = !this.areAllItemsExpanded();
-        this.items = this.toggleAllRecursive(this.items, expanded);
-    }
-
-    private toggleAllRecursive(items: MenuItem[], expanded: boolean): MenuItem[] {
-        return items.map((menuItem) => {
-            menuItem.expanded = expanded;
-            if (menuItem.items) {
-                menuItem.items = this.toggleAllRecursive(menuItem.items, expanded);
-            }
-            return menuItem;
-        });
-    }
-
-    private areAllItemsExpanded(): boolean {
-        return this.items.every((menuItem) => menuItem.expanded);
-    }
-}
-```
-</details>
-
-## Multiple
-
-Only one single root menuitem can be active by default, enable multiple property to be able to open more than one items.
-
-```html
-<p-panelmenu [model]="items" [style]="{'width':'300px'}" [multiple]="true" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
-```typescript
-import { Component, OnInit } from '@angular/core';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
 
 @Component({
-    selector: 'panel-menu-multiple-demo',
-    templateUrl: './panel-menu-multiple-demo.html',
+    template: `
+        <div class="card flex justify-center">
+            <p-panelmenu [model]="items" class="w-full md:w-80" />
+        </div>
+    `,
     standalone: true,
-    imports: [PanelMenu]
+    imports: [PanelMenuModule]
 })
-export class PanelMenuMultipleDemo implements OnInit {
+export class PanelmenuBasicDemo implements OnInit {
     items: MenuItem[];
 
     ngOnInit() {
@@ -326,40 +106,335 @@ export class PanelMenuMultipleDemo implements OnInit {
                     }
                 ]
             }
-        ]
+        ];
     }
 }
 ```
-</details>
+
+## Command
+
+The command property defines the callback to run when an item is activated by click or a key event.
+
+```typescript
+import { Component, OnInit, inject } from '@angular/core';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
+import { ToastModule } from 'primeng/toast';
+import { MenuItem, MessageService } from 'primeng/api';
+import { PanelMenu } from 'primeng/panelmenu';
+
+@Component({
+    template: `
+        <div class="card flex justify-center">
+            <p-toast />
+            <p-panelmenu [model]="items" class="w-full md:w-80" />
+        </div>
+    `,
+    standalone: true,
+    imports: [PanelMenuModule, ToastModule],
+    providers: [MessageService]
+})
+export class PanelmenuCommandDemo implements OnInit {
+    private messageService = inject(MessageService);
+    items: MenuItem[];
+
+    ngOnInit() {
+        this.items = [
+            {
+                label: 'Files',
+                icon: 'pi pi-file',
+                items: [
+                    {
+                        label: 'New',
+                        icon: 'pi pi-plus',
+                        command: () => {
+                            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File created', life: 3000 });
+                        }
+                    },
+                    {
+                        label: 'Search',
+                        icon: 'pi pi-search',
+                        command: () => {
+                            this.messageService.add({
+                                severity: 'warn',
+                                summary: 'Search Results',
+                                detail: 'No results found',
+                                life: 3000
+                            });
+                        }
+                    },
+                    {
+                        label: 'Print',
+                        icon: 'pi pi-print',
+                        command: () => {
+                            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No printer connected', life: 3000 });
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'Sync',
+                icon: 'pi pi-cloud',
+                items: [
+                    {
+                        label: 'Import',
+                        icon: 'pi pi-cloud-download',
+                        command: () => {
+                            this.messageService.add({
+                                severity: 'info',
+                                summary: 'Downloads',
+                                detail: 'Downloaded from cloud',
+                                life: 3000
+                            });
+                        }
+                    },
+                    {
+                        label: 'Export',
+                        icon: 'pi pi-cloud-upload',
+                        command: () => {
+                            this.messageService.add({ severity: 'info', summary: 'Shared', detail: 'Exported to cloud', life: 3000 });
+                        }
+                    }
+                ]
+            },
+            {
+                label: 'Sign Out',
+                icon: 'pi pi-sign-out',
+                command: () => {
+                    this.messageService.add({ severity: 'info', summary: 'Signed out', detail: 'User logged out', life: 3000 });
+                }
+            }
+        ];
+    }
+}
+```
+
+## Controlled
+
+Menu items can be controlled programmatically.
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
+import { MenuItem } from 'primeng/api';
+import { PanelMenu } from 'primeng/panelmenu';
+
+@Component({
+    template: `
+        <div class="card flex flex-col items-center gap-4">
+            <p-button label="Toggle All" [text]="true" (onClick)="toggleAll()" />
+            <p-panelmenu [model]="items" class="w-full md:w-80" />
+        </div>
+    `,
+    standalone: true,
+    imports: [ButtonModule, PanelMenuModule]
+})
+export class PanelmenuControlledDemo implements OnInit {
+    items: MenuItem[];
+
+    ngOnInit() {
+        this.items = [
+            {
+                key: '0',
+                label: 'Users',
+                icon: 'pi pi-users',
+                items: [
+                    {
+                        key: '0_1',
+                        label: 'New',
+                        items: [
+                            {
+                                key: '0_1_0',
+                                label: 'Member'
+                            },
+                            {
+                                key: '0_1_1',
+                                label: 'Group'
+                            }
+                        ]
+                    },
+                    {
+                        key: '0_2',
+                        label: 'Search'
+                    }
+                ]
+            },
+            {
+                key: '1',
+                label: 'Tasks',
+                icon: 'pi pi-server',
+                items: [
+                    {
+                        key: '1_0',
+                        label: 'Add New'
+                    },
+                    {
+                        key: '1_1',
+                        label: 'Pending'
+                    },
+                    {
+                        key: '1_2',
+                        label: 'Overdue'
+                    }
+                ]
+            },
+            {
+                key: '2',
+                label: 'Calendar',
+                icon: 'pi pi-calendar',
+                items: [
+                    {
+                        key: '2_0',
+                        label: 'New Event'
+                    },
+                    {
+                        key: '2_1',
+                        label: 'Today'
+                    },
+                    {
+                        key: '2_2',
+                        label: 'This Week'
+                    }
+                ]
+            }
+        ];
+    }
+
+    toggleAll() {
+        const expanded = !this.areAllItemsExpanded();
+        this.items = this.toggleAllRecursive(this.items, expanded);
+    }
+}
+```
+
+## Multiple
+
+Only one single root menuitem can be active by default, enable multiple property to be able to open more than one items.
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
+import { MenuItem } from 'primeng/api';
+import { PanelMenu } from 'primeng/panelmenu';
+
+@Component({
+    template: `
+        <div class="card flex justify-center">
+            <p-panelmenu [model]="items" styleClass="w-full md:w-80" [multiple]="true" />
+        </div>
+    `,
+    standalone: true,
+    imports: [PanelMenuModule]
+})
+export class PanelmenuMultipleDemo implements OnInit {
+    items: MenuItem[];
+
+    ngOnInit() {
+        this.items = [
+            {
+                label: 'Files',
+                icon: 'pi pi-file',
+                items: [
+                    {
+                        label: 'Documents',
+                        icon: 'pi pi-file',
+                        items: [
+                            {
+                                label: 'Invoices',
+                                icon: 'pi pi-file-pdf',
+                                items: [
+                                    {
+                                        label: 'Pending',
+                                        icon: 'pi pi-stop'
+                                    },
+                                    {
+                                        label: 'Paid',
+                                        icon: 'pi pi-check-circle'
+                                    }
+                                ]
+                            },
+                            {
+                                label: 'Clients',
+                                icon: 'pi pi-users'
+                            }
+                        ]
+                    },
+                    {
+                        label: 'Images',
+                        icon: 'pi pi-image',
+                        items: [
+                            {
+                                label: 'Logos',
+                                icon: 'pi pi-image'
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                label: 'Cloud',
+                icon: 'pi pi-cloud',
+                items: [
+                    {
+                        label: 'Upload',
+                        icon: 'pi pi-cloud-upload'
+                    },
+                    {
+                        label: 'Download',
+                        icon: 'pi pi-cloud-download'
+                    },
+                    {
+                        label: 'Sync',
+                        icon: 'pi pi-refresh'
+                    }
+                ]
+            },
+            {
+                label: 'Devices',
+                icon: 'pi pi-desktop',
+                items: [
+                    {
+                        label: 'Phone',
+                        icon: 'pi pi-mobile'
+                    },
+                    {
+                        label: 'Desktop',
+                        icon: 'pi pi-desktop'
+                    },
+                    {
+                        label: 'Tablet',
+                        icon: 'pi pi-tablet'
+                    }
+                ]
+            }
+        ];
+    }
+}
+```
 
 ## Router
 
 Menu items support navigation via routerLink, programmatic routing using commands, or external URLs.
 
-```html
-<p-panelmenu [model]="items" class="w-full md:w-80" />
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem, MessageService } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
-import { Router } from '@angular/router';
 
 @Component({
-    selector: 'panel-menu-router-demo',
-    templateUrl: './panel-menu-router-demo.html',
+    template: `
+        <div class="card flex justify-center">
+            <p-panelmenu [model]="items" class="w-full md:w-80" />
+        </div>
+    `,
     standalone: true,
-    imports: [PanelMenu],
+    imports: [PanelMenuModule],
     providers: [MessageService]
 })
-export class PanelMenuRouterDemo implements OnInit {
+export class PanelmenuRouterDemo implements OnInit {
+    private messageService = inject(MessageService);
     items: MenuItem[];
-
-    constructor(private router: Router) {}
 
     ngOnInit() {
         this.items = [
@@ -406,47 +481,38 @@ export class PanelMenuRouterDemo implements OnInit {
     }
 }
 ```
-</details>
-
-## styledoc
-
-Following is the list of structural style classes, for theming classes visit theming page.
 
 ## Template
 
 PanelMenu requires a collection of menuitems as its model .
 
-```html
-<p-panelmenu [model]="items" class="w-full md:w-80">
-    <ng-template #item let-item>
-         <a pRipple class="flex items-center px-4 py-2 cursor-pointer group">
-            <i [class]="item.icon + ' text-primary group-hover:text-inherit'"></i>
-            <span class="ms-2">{{ item.label }}</span>
-            <p-badge *ngIf="item.badge" class="ms-auto" [value]="item.badge" />
-            <span *ngIf="item.shortcut" class="ms-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
-        </a>
-    </ng-template>
-</p-panelmenu>
-```
-
-<details>
-<summary>TypeScript Example</summary>
-
 ```typescript
 import { Component, OnInit } from '@angular/core';
+import { BadgeModule } from 'primeng/badge';
+import { PanelMenu, PanelMenuModule } from 'primeng/panelmenu';
+import { RippleModule } from 'primeng/ripple';
 import { MenuItem } from 'primeng/api';
 import { PanelMenu } from 'primeng/panelmenu';
-import { BadgeModule } from 'primeng/badge';
-import { Ripple } from 'primeng/ripple';
-import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'panel-menu-template-demo',
-    templateUrl: './panel-menu-template-demo.html',
+    template: `
+        <div class="card flex flex-col items-center">
+            <p-panelmenu [model]="items" class="w-full md:w-80">
+                <ng-template #item let-item>
+                    <a pRipple class="flex items-center px-4 py-2 cursor-pointer group">
+                        <i [class]="item.icon + ' text-primary group-hover:text-inherit'"></i>
+                        <span class="ms-2">{{ item.label }}</span>
+                        <p-badge *ngIf="item.badge" class="ms-auto" [value]="item.badge" />
+                        <span *ngIf="item.shortcut" class="ms-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+                    </a>
+                </ng-template>
+            </p-panelmenu>
+        </div>
+    `,
     standalone: true,
-    imports: [PanelMenu, BadgeModule, Ripple, CommonModule]
+    imports: [BadgeModule, PanelMenuModule, RippleModule]
 })
-export class PanelMenuTemplateDemo implements OnInit {
+export class PanelmenuTemplateDemo implements OnInit {
     items: MenuItem[];
 
     ngOnInit() {
@@ -519,24 +585,8 @@ export class PanelMenuTemplateDemo implements OnInit {
         const expanded = !this.areAllItemsExpanded();
         this.items = this.toggleAllRecursive(this.items, expanded);
     }
-
-    private toggleAllRecursive(items: MenuItem[], expanded: boolean): MenuItem[] {
-        return items.map((menuItem) => {
-            menuItem.expanded = expanded;
-            if (menuItem.items) {
-                menuItem.items = this.toggleAllRecursive(menuItem.items, expanded);
-            }
-            return menuItem;
-        });
-    }
-
-    private areAllItemsExpanded(): boolean {
-        return this.items.every((menuItem) => menuItem.expanded);
-    }
-
 }
 ```
-</details>
 
 ## Panel Menu
 

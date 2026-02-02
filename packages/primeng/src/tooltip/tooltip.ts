@@ -23,6 +23,8 @@ const TOOLTIP_INSTANCE = new InjectionToken<Tooltip>('TOOLTIP_INSTANCE');
     providers: [TooltipStyle, { provide: TOOLTIP_INSTANCE, useExisting: Tooltip }, { provide: PARENT_INSTANCE, useExisting: Tooltip }]
 })
 export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
+    componentName = 'Tooltip';
+
     $pcTooltip: Tooltip | undefined = inject(TOOLTIP_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
 
     /**
@@ -34,7 +36,7 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
      * Event to show the tooltip.
      * @group Props
      */
-    @Input() tooltipEvent: 'hover' | 'focus' | 'both' | string | any = 'hover';
+    @Input() tooltipEvent: 'hover' | 'focus' | 'both' = 'hover';
     /**
      * Type of CSS position.
      * @group Props
@@ -96,6 +98,11 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
      */
     @Input({ transform: booleanAttribute }) hideOnEscape: boolean = true;
     /**
+     * Whether to show the tooltip only when the target text overflows (e.g., ellipsis is active).
+     * @group Props
+     */
+    @Input({ transform: booleanAttribute }) showOnEllipsis: boolean = false;
+    /**
      * Content of the tooltip.
      * @group Props
      */
@@ -143,6 +150,7 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
         life: null,
         autoHide: true,
         hideOnEscape: true,
+        showOnEllipsis: false,
         id: uuid('pn_id_') + '_tooltip'
     };
 
@@ -173,6 +181,12 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
     focusListener: Nullable<Function>;
 
     blurListener: Nullable<Function>;
+
+    touchStartListener: Nullable<Function>;
+
+    touchEndListener: Nullable<Function>;
+
+    documentTouchListener: Nullable<Function>;
 
     documentEscapeListener: Nullable<Function>;
 
@@ -231,6 +245,12 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
                     this.el.nativeElement.addEventListener('mouseenter', this.mouseEnterListener);
                     this.el.nativeElement.addEventListener('click', this.clickListener);
                     this.el.nativeElement.addEventListener('mouseleave', this.mouseLeaveListener);
+
+                    // Touch support
+                    this.touchStartListener = this.onTouchStart.bind(this);
+                    this.touchEndListener = this.onTouchEnd.bind(this);
+                    this.el.nativeElement.addEventListener('touchstart', this.touchStartListener, { passive: true });
+                    this.el.nativeElement.addEventListener('touchend', this.touchEndListener, { passive: true });
                 }
                 if (tooltipEvent === 'focus' || tooltipEvent === 'both') {
                     this.focusListener = this.onFocus.bind(this);
@@ -323,6 +343,10 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
             this.setOption({ autoHide: simpleChange.autoHide.currentValue });
         }
 
+        if (simpleChange.showOnEllipsis) {
+            this.setOption({ showOnEllipsis: simpleChange.showOnEllipsis.currentValue });
+        }
+
         if (simpleChange.id) {
             this.setOption({ id: simpleChange.id.currentValue });
         }
@@ -365,6 +389,40 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
         }
     }
 
+    onTouchStart(e: TouchEvent) {
+        if (!this.container && !this.showTimeout) {
+            this.activate();
+
+            if (!this.isAutoHide()) {
+                this.bindDocumentTouchListener();
+            }
+        }
+    }
+
+    onTouchEnd(e: TouchEvent) {
+        if (this.isAutoHide()) {
+            this.deactivate();
+        }
+    }
+
+    bindDocumentTouchListener() {
+        if (!this.documentTouchListener) {
+            this.documentTouchListener = this.renderer.listen('document', 'touchstart', (e: TouchEvent) => {
+                if (this.container && !this.container.contains(e.target) && !this.el.nativeElement.contains(e.target)) {
+                    this.deactivate();
+                    this.unbindDocumentTouchListener();
+                }
+            });
+        }
+    }
+
+    unbindDocumentTouchListener() {
+        if (this.documentTouchListener) {
+            this.documentTouchListener();
+            this.documentTouchListener = null;
+        }
+    }
+
     onFocus(e: Event) {
         this.activate();
     }
@@ -377,8 +435,16 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
         this.deactivate();
     }
 
+    hasEllipsis(): boolean {
+        const el = this.el.nativeElement;
+        return el.offsetWidth < el.scrollWidth || el.offsetHeight < el.scrollHeight;
+    }
+
     activate() {
         if (!this.interactionInProgress) {
+            if (this.getOption('showOnEllipsis') && !this.hasEllipsis()) {
+                return;
+            }
             this.active = true;
             this.clearHideTimeout();
 
@@ -708,6 +774,11 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
             this.el.nativeElement.removeEventListener('mouseenter', this.mouseEnterListener);
             this.el.nativeElement.removeEventListener('mouseleave', this.mouseLeaveListener);
             this.el.nativeElement.removeEventListener('click', this.clickListener);
+
+            // Touch support
+            this.el.nativeElement.removeEventListener('touchstart', this.touchStartListener);
+            this.el.nativeElement.removeEventListener('touchend', this.touchEndListener);
+            this.unbindDocumentTouchListener();
         }
         if (tooltipEvent === 'focus' || tooltipEvent === 'both') {
             let target = this.el.nativeElement.querySelector('.p-component');
@@ -732,6 +803,7 @@ export class Tooltip extends BaseComponent<TooltipPassThroughOptions> {
         this.unbindDocumentResizeListener();
         this.unbindScrollListener();
         this.unbindContainerMouseleaveListener();
+        this.unbindDocumentTouchListener();
         this.clearTimeouts();
         this.container = null;
         this.scrollHandler = null;

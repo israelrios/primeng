@@ -42,7 +42,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
 
     private _themeScopedListener: () => void;
 
-    private readonly themeListenerCallbacks = new Map<Handler, Handler>();
+    private themeChangeListenerMap: Map<string, any> = new Map();
 
     /******************** Inputs ********************/
 
@@ -76,7 +76,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
     $attrSelector = uuid('pc');
 
     get $name() {
-        return this['componentName'] || this.constructor?.name?.replace(/^_/, '') || 'UnknownComponent';
+        return this['componentName'] || 'UnknownComponent';
     }
 
     private get $hostName() {
@@ -166,35 +166,31 @@ export class BaseComponent<PT = any> implements Lifecycle {
         // watch _dt_ changes
         effect((onCleanup) => {
             if (this.document && !isPlatformServer(this.platformId)) {
-                this._themeChangeListenerOff(this._themeScopedListener);
-
                 if (this.dt()) {
                     this._loadScopedThemeStyles(this.dt());
                     this._themeScopedListener = () => this._loadScopedThemeStyles(this.dt());
-                    this._themeChangeListener(this._themeScopedListener);
+                    this._themeChangeListener('_themeScopedListener', this._themeScopedListener);
                 } else {
                     this._unloadScopedThemeStyles();
                 }
             }
 
             onCleanup(() => {
-                this._themeChangeListenerOff(this._themeScopedListener);
+                this._offThemeChangeListener('_themeScopedListener');
             });
         });
 
         // watch _unstyled_ changes
         effect((onCleanup) => {
             if (this.document && !isPlatformServer(this.platformId)) {
-                this._themeChangeListenerOff(this._loadCoreStyles);
-
                 if (!this.$unstyled()) {
                     this._loadCoreStyles();
-                    this._themeChangeListener(this._loadCoreStyles); // Update styles with theme settings
+                    this._themeChangeListener('_loadCoreStyles', this._loadCoreStyles); // Update styles with theme settings
                 }
             }
 
             onCleanup(() => {
-                this._themeChangeListenerOff(this._loadCoreStyles);
+                this._offThemeChangeListener('_loadCoreStyles');
             });
         });
 
@@ -333,7 +329,7 @@ export class BaseComponent<PT = any> implements Lifecycle {
 
     private _loadStyles() {
         this._load();
-        this._themeChangeListener(this._load);
+        this._themeChangeListener('_load', () => this._load());
     }
 
     private _loadGlobalStyles() {
@@ -396,28 +392,24 @@ export class BaseComponent<PT = any> implements Lifecycle {
         this.scopedStyleEl?.remove();
     }
 
-    private _themeChangeListener(callback = () => {}) {
+    private _themeChangeListener(id: string, callback = () => {}) {
+        this._offThemeChangeListener(id);
         Base.clearLoadedStyleNames();
-        const handler = callback.bind(this);
-        this.themeListenerCallbacks.set(callback, handler);
-        ThemeService.on('theme:change', handler);
+        const hold = callback.bind(this);
+        this.themeChangeListenerMap.set(id, hold);
+        ThemeService.on('theme:change', hold);
     }
 
     private _removeThemeListeners() {
-        this._themeChangeListenerOff(this._loadCoreStyles);
-        this._themeChangeListenerOff(this._load);
-        this._themeChangeListenerOff(this._themeScopedListener);
+        this._offThemeChangeListener('_themeScopedListener');
+        this._offThemeChangeListener('_loadCoreStyles');
+        this._offThemeChangeListener('_load');
     }
 
-    private _themeChangeListenerOff(handler: Handler | undefined) {
-        if (!handler) {
-            return;
-        }
-        ThemeService.off('theme:change', handler);
-        const other = this.themeListenerCallbacks.get(handler);
-        if (other) {
-            ThemeService.off('theme:change', other);
-            this.themeListenerCallbacks.delete(handler);
+    private _offThemeChangeListener(id: string) {
+        if (this.themeChangeListenerMap.has(id)) {
+            ThemeService.off('theme:change', this.themeChangeListenerMap.get(id));
+            this.themeChangeListenerMap.delete(id);
         }
     }
 
