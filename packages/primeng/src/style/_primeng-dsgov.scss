@@ -25,31 +25,29 @@
     display: flex;
 }
 
-.ng-invalid.ng-dirty {
-    &.p-inputtext,
-    &.p-textarea,
-    &.p-inputwrapper:not(:has(.p-inputtext)),
-    &.p-inputwrapper > .p-inputtext {
+:where(.ng-invalid.ng-dirty, .p-invalid) {
+    &.p-inputwrapper:not(:has(.p-inputtext)) {
         border-width: var(--surface-width-md);
     }
+}
 
-    // sobrescreve a cor da borda quando o componente tiver o foco para não mostrar a borda com cor diferente da sombra.
-    &.p-component:enabled:focus:not(.p-disabled) {
-        --p-inputtext-invalid-border-color: var(--p-form-field-focus-border-color);
-        --p-textarea-invalid-border-color: var(--p-form-field-focus-border-color);
-    }
+.p-inputtext.p-invalid,
+.p-inputtext.ng-invalid.ng-dirty,
+.p-textarea.p-invalid,
+.p-textarea.ng-invalid.ng-dirty,
+.p-inputwrapper.p-invalid .p-inputtext,
+.p-inputwrapper.ng-invalid.ng-dirty .p-inputtext {
+    border-width: var(--surface-width-md);
+}
 
-    &.p-focus:not(.p-disabled) {
-        --p-select-invalid-border-color: var(--p-form-field-focus-border-color);
-        --p-multiselect-invalid-border-color: var(--p-form-field-focus-border-color);
-        --p-autocomplete-invalid-border-color: var(--p-form-field-focus-border-color);
-        --p-inputchips-invalid-border-color: var(--p-form-field-focus-border-color);
-    }
+:where(.p-inputtext, .p-textarea):is(.ng-invalid.ng-dirty, .p-invalid):is(:focus, :focus-visible):not(.p-disabled) {
+    --p-inputtext-invalid-border-color: var(--p-form-field-focus-border-color);
+    --p-textarea-invalid-border-color: var(--p-form-field-focus-border-color);
+}
 
-    &:not(.p-disabled):has(:focus-visible) {
-        --p-checkbox-invalid-border-color: var(--p-form-field-focus-border-color);
-        --p-radiobutton-invalid-border-color: var(--p-form-field-focus-border-color);
-    }
+:where(.p-inputwrapper.ng-invalid.ng-dirty, .p-inputwrapper.p-invalid):is(.p-inputwrapper-focus, .p-focus):not(.p-disabled) > :is(.p-inputtext, .p-textarea) {
+    --p-inputtext-invalid-border-color: var(--p-form-field-focus-border-color);
+    --p-textarea-invalid-border-color: var(--p-form-field-focus-border-color);
 }
 
 .p-select-label,
@@ -95,10 +93,11 @@
 
 .p-select-clear-icon {
     --padding: calc((var(--p-select-dropdown-width) - var(--p-icon-size)) / 2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: var(--padding);
-    margin-right: calc(var(--spacing-scale-half) + 2px);
-    //noinspection CssInvalidFunction
-    transform: translateY(calc(var(--padding) * -1));
+    margin-right: var(--spacing-scale-half);
     box-sizing: content-box;
 }
 
