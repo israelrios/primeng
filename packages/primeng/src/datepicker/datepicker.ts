@@ -541,7 +541,7 @@ export class DatePicker extends BaseInput<DatePickerPassThrough> {
 
     $pcDatePicker: DatePicker | undefined = inject(DATEPICKER_INSTANCE, { optional: true, skipSelf: true }) ?? undefined;
 
-    @Input() iconDisplay: 'input' | 'button' = 'button';
+    @Input() iconDisplay: 'input' | 'button' = 'input'; // the default changed to 'input' for dsgov
     /**
      * Style class of the component.
      * @deprecated since v20.0.0, use `class` instead.
