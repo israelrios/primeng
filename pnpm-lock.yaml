@@ -232,6 +232,9 @@ importers:
       '@docsearch/js':
         specifier: ^3.3.4
         version: 3.9.0(@algolia/client-search@4.25.3)(@types/react@18.3.27)(search-insights@2.17.3)
+      '@govbr-ds/core':
+        specifier: ^3.6.2
+        version: 3.7.0
       '@primeuix/themes':
         specifier: 'catalog:'
         version: 2.0.3

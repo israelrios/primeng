@@ -26,6 +26,7 @@
         "@angular/ssr": "catalog:angular21",
         "@docsearch/css": "^3.3.4",
         "@docsearch/js": "^3.3.4",
+        "@govbr-ds/core": "^3.6.2",
         "@primeuix/themes": "catalog:",
         "@angular/cdk": "catalog:angular21",
         "@stackblitz/sdk": "1.9.0",

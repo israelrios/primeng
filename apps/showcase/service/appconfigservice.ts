@@ -6,7 +6,7 @@ import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angu
 })
 export class AppConfigService {
     appState = signal<AppState>({
-        preset: 'Aura',
+        preset: 'DS Gov',
         primary: 'noir',
         surface: null,
         darkTheme: false,

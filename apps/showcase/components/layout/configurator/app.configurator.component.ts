@@ -8,6 +8,7 @@ import Aura from '@primeuix/themes/aura';
 import Lara from '@primeuix/themes/lara';
 import Material from '@primeuix/themes/material';
 import Nora from '@primeuix/themes/nora';
+import { DsGovTheme } from 'primeng/presets';
 import { ButtonModule } from 'primeng/button';
 import { PrimeNG } from 'primeng/config';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -18,7 +19,8 @@ const presets = {
     Aura,
     Material,
     Lara,
-    Nora
+    Nora,
+    'DS Gov': DsGovTheme
 };
 
 @Component({

@@ -1,12 +1,12 @@
 import { routes } from '@/router/app.routes';
 import { DemoCodeService } from '@/service/democodeservice';
 import { DesignerService } from '@/service/designerservice';
-import Noir from '@/themes/app-theme';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
+import { DsGovTheme } from 'primeng/presets';
 
 function initializeDemoCode(demoCodeService: DemoCodeService) {
     return () => demoCodeService.loadDemos();
@@ -18,7 +18,12 @@ export const appConfig: ApplicationConfig = {
         provideRouter(routes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' })), // withEnabledBlockingInitialNavigation()
         provideHttpClient(withFetch()),
         providePrimeNG({
-            theme: Noir,
+            theme: {
+                preset: DsGovTheme,
+                options: {
+                    darkModeSelector: '.p-dark'
+                }
+            },
             ripple: false
         }),
         MessageService,
