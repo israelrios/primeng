@@ -129,6 +129,10 @@ export const DsGovTheme = definePreset(lara, {
         }
     },
     semantic: {
+        iconSize: 'var(--icon-size-base)',
+        content: {
+            borderRadius: 'var(--surface-rounder-sm)'
+        },
         primary: {
             '50': 'var(--blue-warm-vivid-10)',
             '100': 'var(--blue-warm-vivid-10)',
@@ -287,6 +291,170 @@ export const DsGovTheme = definePreset(lara, {
 }
 `
         },
+        message: {
+            root: {
+                borderRadius: '0',
+                borderWidth: '0'
+            },
+            content: {
+                padding: 'var(--spacing-scale-3x) var(--spacing-scale-base) var(--spacing-scale-3x) var(--spacing-scale-2x)',
+                gap: 'var(--spacing-scale-base)'
+            },
+            simple: {
+                content: {
+                    padding: 'var(--spacing-scale-half)'
+                }
+            },
+            text: {
+                fontSize: 'var(--font-size-scale-base)',
+                fontWeight: 'var(--font-weight-medium)',
+                sm: {
+                    fontSize: 'var(--font-size-scale-base)'
+                }
+            },
+            icon: {
+                size: 'var(--icon-size-base)',
+                sm: { size: 'var(--icon-size-base)' }
+            },
+            colorScheme: {
+                light: {
+                    info: {
+                        background: 'var(--info-alternative)',
+                        borderColor: 'transparent',
+                        color: 'var(--color)',
+                        shadow: 'none',
+                        simple: {
+                            color: 'var(--pure-0)'
+                        }
+                    },
+                    success: {
+                        background: 'var(--success-alternative)',
+                        borderColor: 'transparent',
+                        color: 'var(--color)',
+                        shadow: 'none',
+                        simple: {
+                            color: 'var(--pure-0)'
+                        }
+                    },
+                    warn: {
+                        background: 'var(--warning-alternative)',
+                        borderColor: 'transparent',
+                        color: 'var(--color)',
+                        shadow: 'none',
+                        simple: {
+                            color: 'var(--color-light)'
+                        }
+                    },
+                    error: {
+                        background: 'var(--danger-alternative)',
+                        borderColor: 'transparent',
+                        color: 'var(--color)',
+                        shadow: 'none',
+                        simple: {
+                            color: 'var(--pure-0)'
+                        }
+                    }
+                }
+            },
+            css: /*language=css*/ `
+.p-message.p-component {
+    display: grid;
+    align-items: center;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.p-message {
+    --message-color-icon: var(--color);
+}
+
+.p-message.p-message-success {
+    --message-color-icon: var(--success);
+}
+
+.p-message.p-message-error {
+    --message-color-icon: var(--danger);
+}
+
+.p-message.p-message-info {
+    --message-color-icon: var(--info);
+}
+
+.p-message:not(.p-message-simple) .p-message-icon {
+    color: var(--message-color-icon);
+}
+
+.p-message.p-message-simple {
+    --feedback-background: var(--background);
+    background: var(--feedback-background);
+    display: inline-grid;
+}
+
+.p-message.p-message-simple .p-message-content {
+    gap: var(--spacing-scale-half);
+}
+
+.p-message.p-message-simple .p-message-icon {
+    color: currentColor;
+    font-style: normal;
+}
+
+.p-message.p-message-simple .p-message-content::before {
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-style: normal;
+    font-size: var(--icon-size-base);
+    text-align: center;
+    font-variant: normal;
+    text-rendering: auto;
+    color: currentColor;
+    line-height: 1;
+    width: calc(var(--icon-size-base) + 8px);
+}
+
+.p-message.p-message-simple.p-message-success .p-message-content::before {
+    content: '\\f058';
+}
+
+.p-message.p-message-simple.p-message-error .p-message-content::before {
+    content: '\\f057';
+}
+
+.p-message.p-message-simple.p-message-info .p-message-content::before {
+    content: '\\f05a';
+}
+
+.p-message.p-message-simple.p-message-warn .p-message-content::before {
+    content: '\\f071';
+}
+
+.p-message.p-message-simple.p-message-success {
+    --feedback-background: var(--success);
+}
+
+.p-message.p-message-simple.p-message-error {
+    --feedback-background: var(--danger);
+}
+
+.p-message.p-message-simple.p-message-info {
+    --feedback-background: var(--info);
+}
+
+.p-message.p-message-simple.p-message-warn {
+    --feedback-background: var(--warning);
+}
+
+.p-message.p-message-simple:has(.p-message-icon) .p-message-content::before {
+    content: none;
+}
+
+.p-message.p-message-simple .p-message-text {
+    font-style: italic;
+}`
+        },
         button: {
             root: {
                 borderRadius: '100em',
@@ -434,6 +602,10 @@ export const DsGovTheme = definePreset(lara, {
     --interactive-rgb: var(--color-dark-rgb);
 }
 
+.p-inputgroupaddon .p-button{
+    height: 38px;
+}
+
 .p-button:not(:disabled):hover {
     background-image: linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover)));
 }
@@ -494,6 +666,9 @@ export const DsGovTheme = definePreset(lara, {
     outline: none;
 }
 `
+        },
+        inputgroup: {
+            css: /*language=css*/ `.p-inputgroupaddon{height: 40px;}`
         },
         checkbox: {
             root: {
@@ -594,6 +769,105 @@ export const DsGovTheme = definePreset(lara, {
 }
 
 .p-checkbox.p-disabled + label {
+    cursor: not-allowed;
+    opacity: var(--disabled);
+}
+`
+        },
+        radiobutton: {
+            root: {
+                width: 'var(--radio-size, 24px)',
+                height: 'var(--radio-size, 24px)',
+                background: 'var(--background)',
+                filledBackground: 'var(--background)',
+                checkedBackground: 'var(--background)',
+                checkedHoverBackground: 'var(--background)',
+                disabledBackground: 'var(--background)',
+                borderColor: 'var(--border-color)',
+                hoverBorderColor: 'var(--border-color)',
+                focusBorderColor: 'var(--focus)',
+                checkedBorderColor: 'var(--border-color)',
+                checkedHoverBorderColor: 'var(--border-color)',
+                checkedFocusBorderColor: 'var(--focus)',
+                checkedDisabledBorderColor: 'var(--border-color)',
+                invalidBorderColor: 'var(--danger)',
+                shadow: 'none',
+                focusRing: {
+                    width: '0',
+                    style: 'solid',
+                    color: 'transparent',
+                    offset: '0',
+                    shadow: '0 0 0 var(--surface-width-md) var(--focus)'
+                },
+                transitionDuration: 'var(--motion-duration-medium, 150ms)',
+                sm: {
+                    width: 'var(--spacing-scale-2xh, 20px)',
+                    height: 'var(--spacing-scale-2xh, 20px)'
+                },
+                lg: {
+                    width: 'calc(var(--radio-size, 24px) + var(--spacing-scale-base, 4px))',
+                    height: 'calc(var(--radio-size, 24px) + var(--spacing-scale-base, 4px))'
+                }
+            },
+            icon: {
+                size: 'var(--radio-bullet-size, 16px)',
+                checkedColor: 'var(--selected)',
+                checkedHoverColor: 'var(--selected)',
+                disabledColor: 'rgba(var(--color-rgb), var(--disabled))',
+                sm: {
+                    size: '10px'
+                },
+                lg: {
+                    size: 'calc(var(--radio-bullet-size, 16px) + var(--spacing-scale-base, 4px))'
+                }
+            },
+            css: /*language=css*/ `
+.p-radiobutton .p-radiobutton-box {
+    border-width: var(--surface-width-sm);
+    border-style: var(--border-style, solid);
+    background-image: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.p-radiobutton .p-radiobutton-icon {
+    transform-origin: center;
+}
+
+.p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:hover) .p-radiobutton-box {
+    background-image: var(--hover-effect, linear-gradient(rgba(var(--interactive-rgb), var(--hover)), rgba(var(--interactive-rgb), var(--hover))));
+}
+
+.p-radiobutton:not(.p-disabled):has(.p-radiobutton-input:active) .p-radiobutton-box {
+    background-image: var(--pressed-effect, linear-gradient(rgba(var(--interactive-rgb), var(--pressed)), rgba(var(--interactive-rgb), var(--pressed))));
+}
+
+.p-radiobutton.p-disabled .p-radiobutton-box {
+    opacity: var(--disabled);
+    cursor: not-allowed;
+}
+
+.p-radiobutton.p-disabled .p-radiobutton-input {
+    cursor: not-allowed;
+}
+
+.p-radiobutton + label {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: var(--spacing-scale-base);
+    min-height: var(--radio-size, 24px);
+    padding-inline-start: 0;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--spacing-scale-2xh, 20px);
+    margin-bottom: 0;
+}
+
+.p-radiobutton + label:empty {
+    margin-inline-start: 0;
+}
+
+.p-radiobutton.p-disabled + label {
     cursor: not-allowed;
     opacity: var(--disabled);
 }

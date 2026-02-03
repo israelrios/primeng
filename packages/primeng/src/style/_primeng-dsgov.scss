@@ -4,6 +4,10 @@
 
 @use '@govbr-ds/core/src/core' as govbr;
 
+input{
+    margin-bottom: 0; //remove a margem inferior padrão do dsgov
+}
+
 // Personalizações para o primeng. Tudo que não foi possível definir com os design tokens disponíveis em src/preset
 
 .p-placeholder {
@@ -91,7 +95,7 @@
     }
 }
 
-.p-select-clear-icon {
+.p-select-clear-icon, .p-multiselect-clear-icon {
     --padding: calc((var(--p-select-dropdown-width) - var(--p-icon-size)) / 2);
     display: inline-flex;
     align-items: center;
@@ -112,13 +116,6 @@
         background-image: linear-gradient(rgba(var(--interactive-rgb), var(--hover-light)), rgba(var(--interactive-rgb), var(--hover-light)));
         border-radius: var(--p-border-radius-button);
     }
-}
-
-.p-multiselect-clear-icon {
-    --padding: calc((var(--p-multiselect-dropdown-width) - var(--p-icon-size)) / 2);
-    --margin: calc(var(--spacing-scale-half) - 1px);
-    padding: var(--padding);
-    margin: var(--margin) 0 var(--margin) 0;
 }
 
 .p-tab {
