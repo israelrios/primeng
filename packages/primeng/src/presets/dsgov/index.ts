@@ -1,4 +1,4 @@
-import lara from '@primeng/themes/lara';
+import lara from '@primeuix/themes/lara';
 import { definePreset } from '@primeuix/styled';
 
 /*
@@ -356,7 +356,7 @@ export const DsGovTheme = definePreset(lara, {
                     }
                 }
             },
-            css: /*language=css*/ `
+            css: /*language=css*/ String.raw`
 .p-message.p-component {
     display: grid;
     align-items: center;
